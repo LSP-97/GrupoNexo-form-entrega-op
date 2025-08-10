@@ -46,7 +46,7 @@
             font-size: 16px;
         }
 
-        select, input[type="number"], textarea {
+        select, input[type="number"], textarea, input[type="file"] {
             width: 100%;
             padding: 12px;
             border: 2px solid #ddd;
@@ -74,42 +74,31 @@
         }
 
         .payment-row {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-            align-items: end;
             background-color: #f8f9fa;
             padding: 15px;
             border-radius: 6px;
             border: 1px solid #dee2e6;
+            margin-bottom: 15px;
         }
 
         .payment-row .form-group {
+            margin-bottom: 15px;
+        }
+
+        .payment-row .form-group:last-child {
             margin-bottom: 0;
-        }
-
-        .payment-row .amount {
-            flex: 1;
-        }
-
-        .payment-row .method {
-            flex: 1;
-        }
-
-        .payment-row .photo {
-            flex: 1;
         }
 
         .payment-row .remove-btn {
             background-color: #dc3545;
             color: white;
             border: none;
-            padding: 8px 12px;
+            padding: 12px 20px;
             border-radius: 4px;
             cursor: pointer;
             font-size: 14px;
-            height: 45px;
-            white-space: nowrap;
+            width: 100%;
+            margin-top: 10px;
         }
 
         .add-payment {
@@ -124,15 +113,11 @@
             width: 100%;
         }
 
-        .photo-input {
-            margin-top: 5px;
-        }
-
         .photo-preview {
             max-width: 100%;
             max-height: 100px;
             border-radius: 4px;
-            margin-top: 5px;
+            margin-top: 10px;
             display: none;
         }
 
@@ -165,6 +150,7 @@
         .photo-status {
             font-size: 14px;
             margin-top: 5px;
+            font-weight: bold;
         }
 
         .required {
@@ -195,20 +181,35 @@
             margin-top: 5px;
         }
 
-        @media (max-width: 600px) {
+        /* Específico para desktop - mantener layout horizontal */
+        @media (min-width: 601px) {
             .payment-row {
-                flex-direction: column;
-                gap: 15px;
+                display: flex;
+                gap: 10px;
+                align-items: end;
             }
-            
+
+            .payment-row .form-group {
+                margin-bottom: 0;
+            }
+
+            .payment-row .amount {
+                flex: 1;
+            }
+
+            .payment-row .method {
+                flex: 1;
+            }
+
+            .payment-row .photo {
+                flex: 1;
+            }
+
             .payment-row .remove-btn {
-                height: auto;
-                padding: 10px;
-            }
-            
-            .container {
-                padding: 15px;
-                margin: 5px;
+                height: 45px;
+                white-space: nowrap;
+                margin-top: 0;
+                width: auto;
             }
         }
     </style>
@@ -317,7 +318,7 @@
                 </button>
 
                 <div id="paymentSummary" style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-radius: 4px; display: none;">
-                    <strong>Total cobrado: $<span id="totalCobrado">0</span></strong>
+                    <strong>Total cobrado: S/<span id="totalCobrado">0</span></strong>
                     <div id="saldoPendiente" style="color: red; margin-top: 5px;"></div>
                 </div>
             </div>
@@ -388,7 +389,7 @@
             const selectedOption = this.selectedOptions[0];
             if (selectedOption && selectedOption.dataset.monto) {
                 currentOPMonto = parseFloat(selectedOption.dataset.monto);
-                document.getElementById('montoTotal').textContent = `$${currentOPMonto}`;
+                document.getElementById('montoTotal').textContent = `S/${currentOPMonto}`;
                 document.getElementById('montoTotalGroup').style.display = 'block';
             } else {
                 document.getElementById('montoTotalGroup').style.display = 'none';
@@ -500,7 +501,7 @@
                 </div>
                 <div class="form-group photo">
                     <label>Foto:</label>
-                    <input type="file" name="paymentPhoto[]" accept="image/*" capture="environment" class="photo-input" style="display:none;" onchange="previewPhoto(this)">
+                    <input type="file" name="paymentPhoto[]" accept="image/*" style="display:none;" onchange="previewPhoto(this)">
                     <div class="photo-status">-</div>
                     <img class="photo-preview" style="display:none;">
                 </div>
@@ -573,10 +574,10 @@
                 
                 if (total < currentOPMonto) {
                     const saldo = currentOPMonto - total;
-                    saldoDiv.textContent = `Saldo pendiente: $${saldo.toFixed(2)}`;
+                    saldoDiv.textContent = `Saldo pendiente: S/${saldo.toFixed(2)}`;
                     saldoDiv.style.display = 'block';
                 } else if (total > currentOPMonto) {
-                    saldoDiv.textContent = `Exceso: $${(total - currentOPMonto).toFixed(2)}`;
+                    saldoDiv.textContent = `Exceso: S/${(total - currentOPMonto).toFixed(2)}`;
                     saldoDiv.style.color = 'orange';
                     saldoDiv.style.display = 'block';
                 } else {
@@ -614,7 +615,7 @@
             let html = `
                 <div class="summary-item"><strong>Chofer:</strong> ${chofer}</div>
                 <div class="summary-item"><strong>OP:</strong> ${op}</div>
-                <div class="summary-item"><strong>Monto Total:</strong> $${montoTotal}</div>
+                <div class="summary-item"><strong>Monto Total:</strong> S/${montoTotal}</div>
                 <div class="summary-item"><strong>Entrega:</strong> ${entrega === 'todo' ? 'Completa' : entrega === 'parte' ? 'Incompleta' : 'No entregado'}</div>
                 <div class="summary-item"><strong>Cobranza:</strong> ${cobranza === 'todo' ? 'Completa' : cobranza === 'parte' ? 'Incompleta' : 'No cobrado'}</div>
             `;
@@ -627,7 +628,7 @@
                 html += '<div class="summary-item"><strong>Pagos:</strong><ul style="margin-left: 20px;">';
                 amounts.forEach((amount, i) => {
                     if (amount.value && methods[i].value) {
-                        html += `<li>$${amount.value} - ${methods[i].selectedOptions[0].textContent}</li>`;
+                        html += `<li>S/${amount.value} - ${methods[i].selectedOptions[0].textContent}</li>`;
                     }
                 });
                 html += '</ul></div>';
