@@ -1,704 +1,742 @@
-body {
-        font-family: Arial, sans-serif;
-        background-color: #f5f5f5;
-        padding: 10px;
-        line-height: 1.4;
-    }
-
-    .container {
-        max-width: 500px;
-        margin: 0 auto;
-        background: white;
-        border-radius: 8px;
-        padding: 20px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-
-    h1 {
-        text-align: center;
-        color: #333;
-        margin-bottom: 30px;
-        font-size: 24px;
-    }
-
-    .form-group {
-        margin-bottom: 20px;
-    }
-
-    label {
-        display: block;
-        font-weight: bold;
-        margin-bottom: 8px;
-        color: #333;
-        font-size: 16px;
-    }
-
-    select, input[type="number"], textarea {
-        width: 100%;
-        padding: 12px;
-        border: 2px solid #ddd;
-        border-radius: 6px;
-        font-size: 16px;
-        background-color: white;
-    }
-
-    select:focus, input:focus, textarea:focus {
-        outline: none;
-        border-color: #007bff;
-    }
-
-    .conditional {
-        background-color: #fff3cd;
-        border: 2px solid #ffc107;
-        border-radius: 6px;
-        padding: 15px;
-        margin-top: 15px;
-        display: none;
-    }
-
-    .conditional.show {
-        display: block;
-    }
-
-    .payment-row {
-        display: flex;
-        gap: 10px;
-        margin-bottom: 15px;
-        align-items: end;
-        background-color: #f8f9fa;
-        padding: 15px;
-        border-radius: 6px;
-        border: 1px solid #dee2e6;
-    }
-
-    .payment-row .form-group {
-        margin-bottom: 0;
-    }
-
-    .payment-row .amount {
-        flex: 1;
-    }
-
-    .payment-row .method {
-        flex: 1;
-    }
-
-    .payment-row .photo {
-        flex: 1;
-    }
-
-    .payment-row .remove-btn {
-        background-color: #dc3545;
-        color: white;
-        border: none;
-        padding: 8px 12px;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 14px;
-        height: 45px;
-        white-space: nowrap;
-    }
-
-    .add-payment {
-        background-color: #28a745;
-        color: white;
-        border: none;
-        padding: 12px 20px;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 16px;
-        margin-bottom: 15px;
-        width: 100%;
-    }
-
-    .photo-input {
-        margin-top: 5px;
-    }
-
-    .photo-preview {
-        max-width: 100%;
-        max-height: 100px;
-        border-radius: 4px;
-        margin-top: 5px;
-        display: none;
-    }
-
-    .submit-btn {
-        background-color: #007bff;
-        color: white;
-        border: none;
-        padding: 15px 30px;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 18px;
-        width: 100%;
-        margin-top: 20px;
-    }
-
-    .submit-btn:hover {
-        background-color: #0056b3;
-    }
-
-    .submit-btn:disabled {
-        background-color: #6c757d;
-        cursor: not-allowed;
-    }
-
-    textarea {
-        resize: vertical;
-        min-height: 80px;
-    }
-
-    .photo-status {
-        font-size: 14px;
-        margin-top: 5px;
-    }
-
-    .required {
-        color: red;
-    }
-
-    .summary {
-        background-color: #e7f3ff;
-        border: 2px solid #007bff;
-        border-radius: 6px;
-        padding: 15px;
-        margin-top: 20px;
-        display: none;
-    }
-
-    .summary h3 {
-        margin-bottom: 10px;
-        color: #007bff;
-    }
-
-    .summary-item {
-        margin-bottom: 8px;
-    }
-
-    .error {
-        color: red;
-        font-size: 14px;
-        margin-top: 5px;
-    }
-
-    @media (max-width: 600px) {
-        .payment-row {
-            flex-direction: column;
-            gap: 15px;
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrega de OP</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        
-        .payment-row .remove-btn {
-            height: auto;
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
             padding: 10px;
+            line-height: 1.4;
         }
-        
+
         .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 16px;
+        }
+
+        select, input[type="number"], textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            background-color: white;
+        }
+
+        select:focus, input:focus, textarea:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+        .conditional {
+            background-color: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 6px;
             padding: 15px;
-            margin: 5px;
+            margin-top: 15px;
+            display: none;
         }
-    }
-</style>
-<form id="deliveryForm">
-        <!-- Chofer -->
-        <div class="form-group">
-            <label for="chofer">Chofer: <span class="required">*</span></label>
-            <select id="chofer" required>
-                <option value="">Seleccionar chofer...</option>
-                <option value="george">George</option>
-                <option value="juan">Juan Pérez</option>
-                <option value="carlos">Carlos González</option>
-                <option value="miguel">Miguel Rodríguez</option>
-            </select>
-        </div>
 
-        <!-- OP -->
-        <div class="form-group">
-            <label for="op">OP: <span class="required">*</span></label>
-            <select id="op" required disabled>
-                <option value="">Primero seleccione un chofer</option>
-            </select>
-        </div>
+        .conditional.show {
+            display: block;
+        }
 
-        <!-- Monto Total (solo información) -->
-        <div class="form-group" id="montoTotalGroup" style="display: none;">
-            <label>Monto Total de la OP:</label>
-            <div id="montoTotal" style="font-size: 18px; font-weight: bold; color: #007bff; padding: 10px; background: #f8f9fa; border-radius: 4px;">-</div>
-        </div>
+        .payment-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            align-items: end;
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #dee2e6;
+        }
 
-        <!-- ¿Qué monto se entregó? -->
-        <div class="form-group">
-            <label for="montoEntregado">¿Qué monto se entregó? <span class="required">*</span></label>
-            <select id="montoEntregado" required>
-                <option value="">Seleccionar...</option>
-                <option value="todo">Todo</option>
-                <option value="parte">Una parte</option>
-                <option value="nada">Nada</option>
-            </select>
-        </div>
+        .payment-row .form-group {
+            margin-bottom: 0;
+        }
 
-        <!-- Condicional: Una parte (entregado) -->
-        <div id="entregadoParte" class="conditional">
-            <div class="form-group">
-                <label for="montoEntregadoValor">Monto Entregado: <span class="required">*</span></label>
-                <input type="number" id="montoEntregadoValor" placeholder="Ejemplo: 300" min="0" step="0.01">
-            </div>
-            <div class="form-group">
-                <label for="motivoEntregadoParte">Motivo: <span class="required">*</span></label>
-                <textarea id="motivoEntregadoParte" placeholder="Ejemplo: No llevamos todos los productos" required></textarea>
-            </div>
-        </div>
+        .payment-row .amount {
+            flex: 1;
+        }
 
-        <!-- Condicional: Nada (entregado) -->
-        <div id="entregadoNada" class="conditional">
-            <div class="form-group">
-                <label for="motivoEntregadoNada">Motivo: <span class="required">*</span></label>
-                <textarea id="motivoEntregadoNada" placeholder="Escriba el motivo..." required></textarea>
-            </div>
-        </div>
+        .payment-row .method {
+            flex: 1;
+        }
 
-        <!-- ¿Qué monto se cobró? -->
-        <div class="form-group">
-            <label for="montoCobrado">¿Qué monto se cobró? <span class="required">*</span></label>
-            <select id="montoCobrado" required>
-                <option value="">Seleccionar...</option>
-                <option value="todo">Todo</option>
-                <option value="parte">Una parte</option>
-                <option value="nada">Nada</option>
-            </select>
-        </div>
+        .payment-row .photo {
+            flex: 1;
+        }
 
-        <!-- Condicional: Una parte (cobrado) -->
-        <div id="cobradoParte" class="conditional">
-            <div class="form-group">
-                <label for="montoCobradoValor">Monto Cobrado: <span class="required">*</span></label>
-                <input type="number" id="montoCobradoValor" placeholder="Ejemplo: 300" min="0" step="0.01">
-            </div>
-            <div class="form-group">
-                <label for="motivoCobradoParte">Motivo: <span class="required">*</span></label>
-                <textarea id="motivoCobradoParte" placeholder="Ejemplo: Cliente no tenía efectivo completo" required></textarea>
-            </div>
-        </div>
+        .payment-row .remove-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            height: 45px;
+            white-space: nowrap;
+        }
 
-        <!-- Condicional: Nada (cobrado) -->
-        <div id="cobradoNada" class="conditional">
-            <div class="form-group">
-                <label for="motivoCobradoNada">Motivo: <span class="required">*</span></label>
-                <textarea id="motivoCobradoNada" placeholder="Escriba el motivo..." required></textarea>
-            </div>
-        </div>
+        .add-payment {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-bottom: 15px;
+            width: 100%;
+        }
 
-        <!-- Comprobantes -->
-        <div id="comprobantesSection" class="conditional">
-            <h3 style="margin-bottom: 15px;">Comprobantes de Pago</h3>
+        .photo-input {
+            margin-top: 5px;
+        }
+
+        .photo-preview {
+            max-width: 100%;
+            max-height: 100px;
+            border-radius: 4px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .submit-btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 18px;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .submit-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .submit-btn:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .photo-status {
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .required {
+            color: red;
+        }
+
+        .summary {
+            background-color: #e7f3ff;
+            border: 2px solid #007bff;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .summary h3 {
+            margin-bottom: 10px;
+            color: #007bff;
+        }
+
+        .summary-item {
+            margin-bottom: 8px;
+        }
+
+        .error {
+            color: red;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 600px) {
+            .payment-row {
+                flex-direction: column;
+                gap: 15px;
+            }
             
-            <div id="paymentsContainer"></div>
+            .payment-row .remove-btn {
+                height: auto;
+                padding: 10px;
+            }
             
-            <button type="button" class="add-payment" onclick="addPaymentRow()">
-                + Agregar Pago
-            </button>
-
-            <div id="paymentSummary" style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-radius: 4px; display: none;">
-                <strong>Total cobrado: $<span id="totalCobrado">0</span></strong>
-                <div id="saldoPendiente" style="color: red; margin-top: 5px;"></div>
-            </div>
-        </div>
-
-        <!-- Resumen antes de enviar -->
-        <div id="summary" class="summary">
-            <h3>Resumen del Formulario</h3>
-            <div id="summaryContent"></div>
-        </div>
-
-        <button type="submit" class="submit-btn">Enviar Formulario</button>
-    </form>
-</div>
-
-<script>
-    // Datos de ejemplo - simula Google Sheets
-    const choferesData = {
-        george: [
-            {op: '857', monto: 881}
-        ],
-        juan: [
-            {op: 'OP-001', monto: 1500},
-            {op: 'OP-002', monto: 2300},
-            {op: 'OP-003', monto: 750}
-        ],
-        carlos: [
-            {op: 'OP-004', monto: 980},
-            {op: 'OP-005', monto: 1200},
-            {op: 'OP-006', monto: 450}
-        ],
-        miguel: [
-            {op: 'OP-007', monto: 1800},
-            {op: 'OP-008', monto: 650},
-            {op: 'OP-009', monto: 2100}
-        ]
-    };
-
-    let paymentCounter = 0;
-    let currentOPMonto = 0;
-
-    // Manejar selección de chofer
-    document.getElementById('chofer').addEventListener('change', function() {
-        const chofer = this.value;
-        const opSelect = document.getElementById('op');
-        
-        opSelect.innerHTML = '<option value="">Seleccionar OP...</option>';
-        document.getElementById('montoTotalGroup').style.display = 'none';
-        
-        if (chofer && choferesData[chofer]) {
-            opSelect.disabled = false;
-            choferesData[chofer].forEach(item => {
-                const option = document.createElement('option');
-                option.value = item.op;
-                option.textContent = item.op;
-                option.dataset.monto = item.monto;
-                opSelect.appendChild(option);
-            });
-        } else {
-            opSelect.disabled = true;
-            opSelect.innerHTML = '<option value="">Primero seleccione un chofer</option>';
+            .container {
+                padding: 15px;
+                margin: 5px;
+            }
         }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ENTREGA DE OP</h1>
         
-        resetForm();
-    });
-
-    // Manejar selección de OP
-    document.getElementById('op').addEventListener('change', function() {
-        const selectedOption = this.selectedOptions[0];
-        if (selectedOption && selectedOption.dataset.monto) {
-            currentOPMonto = parseFloat(selectedOption.dataset.monto);
-            document.getElementById('montoTotal').textContent = `$${currentOPMonto}`;
-            document.getElementById('montoTotalGroup').style.display = 'block';
-        } else {
-            document.getElementById('montoTotalGroup').style.display = 'none';
-            currentOPMonto = 0;
-        }
-        resetForm();
-    });
-
-    // Manejar condiciones para "monto entregado"
-    document.getElementById('montoEntregado').addEventListener('change', function() {
-        const value = this.value;
-        document.getElementById('entregadoParte').classList.toggle('show', value === 'parte');
-        document.getElementById('entregadoNada').classList.toggle('show', value === 'nada');
-        
-        // Actualizar validaciones
-        const montoInput = document.getElementById('montoEntregadoValor');
-        const motivoInput = document.getElementById('motivoEntregadoParte');
-        const motivoNadaInput = document.getElementById('motivoEntregadoNada');
-        
-        if (value === 'parte') {
-            montoInput.required = true;
-            motivoInput.required = true;
-            motivoNadaInput.required = false;
-        } else if (value === 'nada') {
-            montoInput.required = false;
-            motivoInput.required = false;
-            motivoNadaInput.required = true;
-        } else {
-            montoInput.required = false;
-            motivoInput.required = false;
-            motivoNadaInput.required = false;
-        }
-    });
-
-    // Manejar condiciones para "monto cobrado"
-    document.getElementById('montoCobrado').addEventListener('change', function() {
-        const value = this.value;
-        const entregaValue = document.getElementById('montoEntregado').value;
-        
-        document.getElementById('cobradoParte').classList.toggle('show', value === 'parte');
-        document.getElementById('cobradoNada').classList.toggle('show', value === 'nada');
-        
-        // Solo mostrar comprobantes si se entregó algo Y se cobró algo
-        const mostrarComprobantes = (entregaValue === 'todo' || entregaValue === 'parte') && 
-                                  (value === 'todo' || value === 'parte');
-        
-        document.getElementById('comprobantesSection').classList.toggle('show', mostrarComprobantes);
-        
-        // Limpiar pagos existentes
-        document.getElementById('paymentsContainer').innerHTML = '';
-        paymentCounter = 0;
-        
-        // Si se muestra la sección de comprobantes y no hay pagos, agregar uno
-        if (mostrarComprobantes) {
-            addPaymentRow();
-        }
-        
-        // Actualizar validaciones
-        const montoInput = document.getElementById('montoCobradoValor');
-        const motivoInput = document.getElementById('motivoCobradoParte');
-        const motivoNadaInput = document.getElementById('motivoCobradoNada');
-        
-        if (value === 'parte') {
-            montoInput.required = true;
-            motivoInput.required = true;
-            motivoNadaInput.required = false;
-        } else if (value === 'nada') {
-            montoInput.required = false;
-            motivoInput.required = false;
-            motivoNadaInput.required = true;
-        } else {
-            montoInput.required = false;
-            motivoInput.required = false;
-            motivoNadaInput.required = false;
-        }
-    });
-
-    // También verificar cuando cambia la entrega
-    document.getElementById('montoEntregado').addEventListener('change', function() {
-        // Re-trigger la lógica de cobrado
-        const cobranzaEvent = new Event('change');
-        document.getElementById('montoCobrado').dispatchEvent(cobranzaEvent);
-    });
-
-    // Agregar fila de pago
-    function addPaymentRow() {
-        paymentCounter++;
-        const container = document.getElementById('paymentsContainer');
-        
-        const row = document.createElement('div');
-        row.className = 'payment-row';
-        row.id = `payment-${paymentCounter}`;
-        
-        const isFirst = container.children.length === 0;
-        
-        row.innerHTML = `
-            <div class="form-group amount">
-                <label>Monto:</label>
-                <input type="number" name="paymentAmount[]" placeholder="100" min="0" step="0.01" required onchange="updatePaymentSummary()">
-            </div>
-            <div class="form-group method">
-                <label>Medio:</label>
-                <select name="paymentMethod[]" onchange="togglePhotoInput(this)" required>
-                    <option value="">Seleccionar...</option>
-                    <option value="efectivo">Efectivo</option>
-                    <option value="qr">QR</option>
-                    <option value="transferencia">Transferencia</option>
+        <form id="deliveryForm">
+            <!-- Chofer -->
+            <div class="form-group">
+                <label for="chofer">Chofer: <span class="required">*</span></label>
+                <select id="chofer" required>
+                    <option value="">Seleccionar chofer...</option>
+                    <option value="george">George</option>
+                    <option value="juan">Juan Pérez</option>
+                    <option value="carlos">Carlos González</option>
+                    <option value="miguel">Miguel Rodríguez</option>
                 </select>
             </div>
-            <div class="form-group photo">
-                <label>Foto:</label>
-                <input type="file" name="paymentPhoto[]" accept="image/*" capture="environment" class="photo-input" style="display:none;" onchange="previewPhoto(this)">
-                <div class="photo-status">-</div>
-                <img class="photo-preview" style="display:none;">
+
+            <!-- OP -->
+            <div class="form-group">
+                <label for="op">OP: <span class="required">*</span></label>
+                <select id="op" required disabled>
+                    <option value="">Primero seleccione un chofer</option>
+                </select>
             </div>
-            ${!isFirst ? `<button type="button" class="remove-btn" onclick="removePaymentRow(${paymentCounter})">Eliminar</button>` : ''}
-        `;
-        
-        container.appendChild(row);
-        updatePaymentSummary();
-    }
 
-    // Mostrar/ocultar input de foto según el medio de pago
-    function togglePhotoInput(select) {
-        const row = select.closest('.payment-row');
-        const photoInput = row.querySelector('input[type="file"]');
-        const photoStatus = row.querySelector('.photo-status');
-        
-        if (select.value === 'qr' || select.value === 'transferencia') {
-            photoInput.style.display = 'block';
-            photoInput.required = true;
-            photoStatus.textContent = 'Requerida';
-            photoStatus.style.color = 'red';
-        } else if (select.value === 'efectivo') {
-            photoInput.style.display = 'none';
-            photoInput.required = false;
-            photoInput.value = '';
-            photoStatus.textContent = 'No requerida';
-            photoStatus.style.color = 'green';
-        } else {
-            photoInput.style.display = 'none';
-            photoInput.required = false;
-            photoInput.value = '';
-            photoStatus.textContent = '-';
-            photoStatus.style.color = 'black';
-        }
-    }
+            <!-- Monto Total (solo información) -->
+            <div class="form-group" id="montoTotalGroup" style="display: none;">
+                <label>Monto Total de la OP:</label>
+                <div id="montoTotal" style="font-size: 18px; font-weight: bold; color: #007bff; padding: 10px; background: #f8f9fa; border-radius: 4px;">-</div>
+            </div>
 
-    // Preview de foto
-    function previewPhoto(input) {
-        const row = input.closest('.payment-row');
-        const preview = row.querySelector('.photo-preview');
-        
-        if (input.files && input.files[0]) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                preview.src = e.target.result;
-                preview.style.display = 'block';
-            };
-            reader.readAsDataURL(input.files[0]);
-        }
-    }
+            <!-- ¿Qué monto se entregó? -->
+            <div class="form-group">
+                <label for="montoEntregado">¿Qué monto se entregó? <span class="required">*</span></label>
+                <select id="montoEntregado" required>
+                    <option value="">Seleccionar...</option>
+                    <option value="todo">Todo</option>
+                    <option value="parte">Una parte</option>
+                    <option value="nada">Nada</option>
+                </select>
+            </div>
 
-    // Actualizar resumen de pagos
-    function updatePaymentSummary() {
-        const amounts = document.querySelectorAll('input[name="paymentAmount[]"]');
-        let total = 0;
-        
-        amounts.forEach(input => {
-            if (input.value && !isNaN(input.value)) {
-                total += parseFloat(input.value);
+            <!-- Condicional: Una parte (entregado) -->
+            <div id="entregadoParte" class="conditional">
+                <div class="form-group">
+                    <label for="montoEntregadoValor">Monto Entregado: <span class="required">*</span></label>
+                    <input type="number" id="montoEntregadoValor" placeholder="Ejemplo: 300" min="0" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label for="motivoEntregadoParte">Motivo: <span class="required">*</span></label>
+                    <textarea id="motivoEntregadoParte" placeholder="Ejemplo: No llevamos todos los productos" required></textarea>
+                </div>
+            </div>
+
+            <!-- Condicional: Nada (entregado) -->
+            <div id="entregadoNada" class="conditional">
+                <div class="form-group">
+                    <label for="motivoEntregadoNada">Motivo: <span class="required">*</span></label>
+                    <textarea id="motivoEntregadoNada" placeholder="Escriba el motivo..." required></textarea>
+                </div>
+            </div>
+
+            <!-- ¿Qué monto se cobró? -->
+            <div class="form-group">
+                <label for="montoCobrado">¿Qué monto se cobró? <span class="required">*</span></label>
+                <select id="montoCobrado" required>
+                    <option value="">Seleccionar...</option>
+                    <option value="todo">Todo</option>
+                    <option value="parte">Una parte</option>
+                    <option value="nada">Nada</option>
+                </select>
+            </div>
+
+            <!-- Condicional: Una parte (cobrado) -->
+            <div id="cobradoParte" class="conditional">
+                <div class="form-group">
+                    <label for="montoCobradoValor">Monto Cobrado: <span class="required">*</span></label>
+                    <input type="number" id="montoCobradoValor" placeholder="Ejemplo: 300" min="0" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label for="motivoCobradoParte">Motivo: <span class="required">*</span></label>
+                    <textarea id="motivoCobradoParte" placeholder="Ejemplo: Cliente no tenía efectivo completo" required></textarea>
+                </div>
+            </div>
+
+            <!-- Condicional: Nada (cobrado) -->
+            <div id="cobradoNada" class="conditional">
+                <div class="form-group">
+                    <label for="motivoCobradoNada">Motivo: <span class="required">*</span></label>
+                    <textarea id="motivoCobradoNada" placeholder="Escriba el motivo..." required></textarea>
+                </div>
+            </div>
+
+            <!-- Comprobantes -->
+            <div id="comprobantesSection" class="conditional">
+                <h3 style="margin-bottom: 15px;">Comprobantes de Pago</h3>
+                
+                <div id="paymentsContainer"></div>
+                
+                <button type="button" class="add-payment" onclick="addPaymentRow()">
+                    + Agregar Pago
+                </button>
+
+                <div id="paymentSummary" style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-radius: 4px; display: none;">
+                    <strong>Total cobrado: $<span id="totalCobrado">0</span></strong>
+                    <div id="saldoPendiente" style="color: red; margin-top: 5px;"></div>
+                </div>
+            </div>
+
+            <!-- Resumen antes de enviar -->
+            <div id="summary" class="summary">
+                <h3>Resumen del Formulario</h3>
+                <div id="summaryContent"></div>
+            </div>
+
+            <button type="submit" class="submit-btn">Enviar Formulario</button>
+        </form>
+    </div>
+
+    <script>
+        // Datos de ejemplo - simula Google Sheets
+        const choferesData = {
+            george: [
+                {op: '857', monto: 881}
+            ],
+            juan: [
+                {op: 'OP-001', monto: 1500},
+                {op: 'OP-002', monto: 2300},
+                {op: 'OP-003', monto: 750}
+            ],
+            carlos: [
+                {op: 'OP-004', monto: 980},
+                {op: 'OP-005', monto: 1200},
+                {op: 'OP-006', monto: 450}
+            ],
+            miguel: [
+                {op: 'OP-007', monto: 1800},
+                {op: 'OP-008', monto: 650},
+                {op: 'OP-009', monto: 2100}
+            ]
+        };
+
+        let paymentCounter = 0;
+        let currentOPMonto = 0;
+
+        // Manejar selección de chofer
+        document.getElementById('chofer').addEventListener('change', function() {
+            const chofer = this.value;
+            const opSelect = document.getElementById('op');
+            
+            opSelect.innerHTML = '<option value="">Seleccionar OP...</option>';
+            document.getElementById('montoTotalGroup').style.display = 'none';
+            
+            if (chofer && choferesData[chofer]) {
+                opSelect.disabled = false;
+                choferesData[chofer].forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item.op;
+                    option.textContent = item.op;
+                    option.dataset.monto = item.monto;
+                    opSelect.appendChild(option);
+                });
+            } else {
+                opSelect.disabled = true;
+                opSelect.innerHTML = '<option value="">Primero seleccione un chofer</option>';
+            }
+            
+            resetForm();
+        });
+
+        // Manejar selección de OP
+        document.getElementById('op').addEventListener('change', function() {
+            const selectedOption = this.selectedOptions[0];
+            if (selectedOption && selectedOption.dataset.monto) {
+                currentOPMonto = parseFloat(selectedOption.dataset.monto);
+                document.getElementById('montoTotal').textContent = `$${currentOPMonto}`;
+                document.getElementById('montoTotalGroup').style.display = 'block';
+            } else {
+                document.getElementById('montoTotalGroup').style.display = 'none';
+                currentOPMonto = 0;
+            }
+            resetForm();
+        });
+
+        // Manejar condiciones para "monto entregado"
+        document.getElementById('montoEntregado').addEventListener('change', function() {
+            const value = this.value;
+            document.getElementById('entregadoParte').classList.toggle('show', value === 'parte');
+            document.getElementById('entregadoNada').classList.toggle('show', value === 'nada');
+            
+            // Actualizar validaciones
+            const montoInput = document.getElementById('montoEntregadoValor');
+            const motivoInput = document.getElementById('motivoEntregadoParte');
+            const motivoNadaInput = document.getElementById('motivoEntregadoNada');
+            
+            if (value === 'parte') {
+                montoInput.required = true;
+                motivoInput.required = true;
+                motivoNadaInput.required = false;
+            } else if (value === 'nada') {
+                montoInput.required = false;
+                motivoInput.required = false;
+                motivoNadaInput.required = true;
+            } else {
+                montoInput.required = false;
+                motivoInput.required = false;
+                motivoNadaInput.required = false;
             }
         });
-        
-        document.getElementById('totalCobrado').textContent = total.toFixed(2);
-        
-        const summaryDiv = document.getElementById('paymentSummary');
-        const saldoDiv = document.getElementById('saldoPendiente');
-        
-        if (total > 0) {
-            summaryDiv.style.display = 'block';
+
+        // Manejar condiciones para "monto cobrado"
+        document.getElementById('montoCobrado').addEventListener('change', function() {
+            const value = this.value;
+            const entregaValue = document.getElementById('montoEntregado').value;
             
-            if (total < currentOPMonto) {
-                const saldo = currentOPMonto - total;
-                saldoDiv.textContent = `Saldo pendiente: $${saldo.toFixed(2)}`;
-                saldoDiv.style.display = 'block';
-            } else if (total > currentOPMonto) {
-                saldoDiv.textContent = `Exceso: $${(total - currentOPMonto).toFixed(2)}`;
-                saldoDiv.style.color = 'orange';
-                saldoDiv.style.display = 'block';
-            } else {
-                saldoDiv.style.display = 'none';
+            document.getElementById('cobradoParte').classList.toggle('show', value === 'parte');
+            document.getElementById('cobradoNada').classList.toggle('show', value === 'nada');
+            
+            // Solo mostrar comprobantes si se entregó algo Y se cobró algo
+            const mostrarComprobantes = (entregaValue === 'todo' || entregaValue === 'parte') && 
+                                      (value === 'todo' || value === 'parte');
+            
+            document.getElementById('comprobantesSection').classList.toggle('show', mostrarComprobantes);
+            
+            // Limpiar pagos existentes
+            document.getElementById('paymentsContainer').innerHTML = '';
+            paymentCounter = 0;
+            
+            // Si se muestra la sección de comprobantes y no hay pagos, agregar uno
+            if (mostrarComprobantes) {
+                addPaymentRow();
             }
-        } else {
-            summaryDiv.style.display = 'none';
+            
+            // Actualizar validaciones
+            const montoInput = document.getElementById('montoCobradoValor');
+            const motivoInput = document.getElementById('motivoCobradoParte');
+            const motivoNadaInput = document.getElementById('motivoCobradoNada');
+            
+            if (value === 'parte') {
+                montoInput.required = true;
+                motivoInput.required = true;
+                motivoNadaInput.required = false;
+            } else if (value === 'nada') {
+                montoInput.required = false;
+                motivoInput.required = false;
+                motivoNadaInput.required = true;
+            } else {
+                montoInput.required = false;
+                motivoInput.required = false;
+                motivoNadaInput.required = false;
+            }
+        });
+
+        // También verificar cuando cambia la entrega
+        document.getElementById('montoEntregado').addEventListener('change', function() {
+            // Re-trigger la lógica de cobrado
+            const cobranzaEvent = new Event('change');
+            document.getElementById('montoCobrado').dispatchEvent(cobranzaEvent);
+        });
+
+        // Agregar fila de pago
+        function addPaymentRow() {
+            paymentCounter++;
+            const container = document.getElementById('paymentsContainer');
+            
+            const row = document.createElement('div');
+            row.className = 'payment-row';
+            row.id = `payment-${paymentCounter}`;
+            
+            const isFirst = container.children.length === 0;
+            
+            row.innerHTML = `
+                <div class="form-group amount">
+                    <label>Monto:</label>
+                    <input type="number" name="paymentAmount[]" placeholder="100" min="0" step="0.01" required onchange="updatePaymentSummary()">
+                </div>
+                <div class="form-group method">
+                    <label>Medio:</label>
+                    <select name="paymentMethod[]" onchange="togglePhotoInput(this)" required>
+                        <option value="">Seleccionar...</option>
+                        <option value="efectivo">Efectivo</option>
+                        <option value="qr">QR</option>
+                        <option value="transferencia">Transferencia</option>
+                    </select>
+                </div>
+                <div class="form-group photo">
+                    <label>Foto:</label>
+                    <input type="file" name="paymentPhoto[]" accept="image/*" capture="environment" class="photo-input" style="display:none;" onchange="previewPhoto(this)">
+                    <div class="photo-status">-</div>
+                    <img class="photo-preview" style="display:none;">
+                </div>
+                ${!isFirst ? `<button type="button" class="remove-btn" onclick="removePaymentRow(${paymentCounter})">Eliminar</button>` : ''}
+            `;
+            
+            container.appendChild(row);
+            updatePaymentSummary();
         }
-    }
 
-    // Eliminar fila de pago
-    function removePaymentRow(id) {
-        document.getElementById(`payment-${id}`).remove();
-        updatePaymentSummary();
-    }
+        // Mostrar/ocultar input de foto según el medio de pago
+        function togglePhotoInput(select) {
+            const row = select.closest('.payment-row');
+            const photoInput = row.querySelector('input[type="file"]');
+            const photoStatus = row.querySelector('.photo-status');
+            
+            if (select.value === 'qr' || select.value === 'transferencia') {
+                photoInput.style.display = 'block';
+                photoInput.required = true;
+                photoStatus.textContent = 'Requerida';
+                photoStatus.style.color = 'red';
+            } else if (select.value === 'efectivo') {
+                photoInput.style.display = 'none';
+                photoInput.required = false;
+                photoInput.value = '';
+                photoStatus.textContent = 'No requerida';
+                photoStatus.style.color = 'green';
+            } else {
+                photoInput.style.display = 'none';
+                photoInput.required = false;
+                photoInput.value = '';
+                photoStatus.textContent = '-';
+                photoStatus.style.color = 'black';
+            }
+        }
 
-    // Resetear formulario parcialmente
-    function resetForm() {
-        document.getElementById('montoEntregado').value = '';
-        document.getElementById('montoCobrado').value = '';
-        document.querySelectorAll('.conditional').forEach(el => el.classList.remove('show'));
-        document.getElementById('paymentsContainer').innerHTML = '';
-        document.getElementById('summary').style.display = 'none';
-        paymentCounter = 0;
-    }
+        // Preview de foto
+        function previewPhoto(input) {
+            const row = input.closest('.payment-row');
+            const preview = row.querySelector('.photo-preview');
+            
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
 
-    // Generar resumen
-    function generateSummary() {
-        const chofer = document.getElementById('chofer').selectedOptions[0]?.textContent || '';
-        const op = document.getElementById('op').value;
-        const montoTotal = currentOPMonto;
-        const entrega = document.getElementById('montoEntregado').value;
-        const cobranza = document.getElementById('montoCobrado').value;
-        
-        let html = `
-            <div class="summary-item"><strong>Chofer:</strong> ${chofer}</div>
-            <div class="summary-item"><strong>OP:</strong> ${op}</div>
-            <div class="summary-item"><strong>Monto Total:</strong> $${montoTotal}</div>
-            <div class="summary-item"><strong>Entrega:</strong> ${entrega === 'todo' ? 'Completa' : entrega === 'parte' ? 'Incompleta' : 'No entregado'}</div>
-            <div class="summary-item"><strong>Cobranza:</strong> ${cobranza === 'todo' ? 'Completa' : cobranza === 'parte' ? 'Incompleta' : 'No cobrado'}</div>
-        `;
-        
-        // Agregar detalles de pagos
-        const amounts = document.querySelectorAll('input[name="paymentAmount[]"]');
-        const methods = document.querySelectorAll('select[name="paymentMethod[]"]');
-        
-        if (amounts.length > 0) {
-            html += '<div class="summary-item"><strong>Pagos:</strong><ul style="margin-left: 20px;">';
-            amounts.forEach((amount, i) => {
-                if (amount.value && methods[i].value) {
-                    html += `<li>$${amount.value} - ${methods[i].selectedOptions[0].textContent}</li>`;
+        // Actualizar resumen de pagos
+        function updatePaymentSummary() {
+            const amounts = document.querySelectorAll('input[name="paymentAmount[]"]');
+            let total = 0;
+            
+            amounts.forEach(input => {
+                if (input.value && !isNaN(input.value)) {
+                    total += parseFloat(input.value);
                 }
             });
-            html += '</ul></div>';
-        }
-        
-        document.getElementById('summaryContent').innerHTML = html;
-        document.getElementById('summary').style.display = 'block';
-    }
-
-    // Manejar envío del formulario
-    document.getElementById('deliveryForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        // Generar resumen antes de enviar
-        generateSummary();
-        
-        // Simular procesamiento
-        const submitBtn = document.querySelector('.submit-btn');
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Enviando...';
-        
-        setTimeout(() => {
-            // Aquí procesarías los datos reales y los enviarías a Google Sheets
-            const result = processFormData();
-            console.log('Datos procesados:', result);
             
-            alert('¡Formulario enviado correctamente!\n\nRevisa la consola (F12) para ver los datos que se enviarían a Google Sheets.');
+            document.getElementById('totalCobrado').textContent = total.toFixed(2);
             
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Enviar Formulario';
+            const summaryDiv = document.getElementById('paymentSummary');
+            const saldoDiv = document.getElementById('saldoPendiente');
             
-            // Opcional: resetear formulario completo
-            // this.reset();
-            // resetForm();
-        }, 1500);
-    });
-
-    // Procesar datos del formulario para enviar a Google Sheets
-    function processFormData() {
-        const chofer = document.getElementById('chofer').selectedOptions[0]?.textContent || '';
-        const op = document.getElementById('op').value;
-        const montoTotal = currentOPMonto;
-        const entrega = document.getElementById('montoEntregado').value;
-        const cobranza = document.getElementById('montoCobrado').value;
-        
-        // Determinar valores para Google Sheets
-        const entregaTexto = entrega === 'todo' ? 'Completa' : 
-                           entrega === 'parte' ? 'Incompleta' : 'No entregado';
-        
-        const cobranzaTexto = cobranza === 'todo' ? 'Completa' : 
-                            cobranza === 'parte' ? 'Incompleta' : 'No cobrado';
-        
-        // Obtener motivos
-        let motivoEntrega = '';
-        if (entrega === 'parte') {
-            motivoEntrega = document.getElementById('motivoEntregadoParte').value;
-        } else if (entrega === 'nada') {
-            motivoEntrega = document.getElementById('motivoEntregadoNada').value;
-        }
-        
-        let motivoCobranza = '';
-        if (cobranza === 'parte') {
-            motivoCobranza = document.getElementById('motivoCobradoParte').value;
-        } else if (cobranza === 'nada') {
-            motivoCobranza = document.getElementById('motivoCobradoNada').value;
-        }
-        
-        // Obtener monto entregado
-        let montoEntregado = 0;
-        if (entrega === 'todo') {
-            montoEntregado = montoTotal;
-        } else if (entrega === 'parte') {
-            montoEntregado = parseFloat(document.getElementById('montoEntregadoValor').value) || 0;
-        }
-        
-        // Procesar pagos
-        const amounts = document.querySelectorAll('input[name="paymentAmount[]"]');
-        const methods = document.querySelectorAll('select[name="paymentMethod[]"]');
-        const photos = document.querySelectorAll('input[name="paymentPhoto[]"]');
-        
-        const rows = [];
-        let totalCobrado = 0;
-        
-        // Crear filas para cada pago
-        amounts.forEach((amount, i) => {
-            if (amount.value && methods[i].value) {
-                const montoStr = parseFloat(amount.value);
-                totalCobrado += montoStr;
+            if (total > 0) {
+                summaryDiv.style.display = 'block';
                 
+                if (total < currentOPMonto) {
+                    const saldo = currentOPMonto - total;
+                    saldoDiv.textContent = `Saldo pendiente: $${saldo.toFixed(2)}`;
+                    saldoDiv.style.display = 'block';
+                } else if (total > currentOPMonto) {
+                    saldoDiv.textContent = `Exceso: $${(total - currentOPMonto).toFixed(2)}`;
+                    saldoDiv.style.color = 'orange';
+                    saldoDiv.style.display = 'block';
+                } else {
+                    saldoDiv.style.display = 'none';
+                }
+            } else {
+                summaryDiv.style.display = 'none';
+            }
+        }
+
+        // Eliminar fila de pago
+        function removePaymentRow(id) {
+            document.getElementById(`payment-${id}`).remove();
+            updatePaymentSummary();
+        }
+
+        // Resetear formulario parcialmente
+        function resetForm() {
+            document.getElementById('montoEntregado').value = '';
+            document.getElementById('montoCobrado').value = '';
+            document.querySelectorAll('.conditional').forEach(el => el.classList.remove('show'));
+            document.getElementById('paymentsContainer').innerHTML = '';
+            document.getElementById('summary').style.display = 'none';
+            paymentCounter = 0;
+        }
+
+        // Generar resumen
+        function generateSummary() {
+            const chofer = document.getElementById('chofer').selectedOptions[0]?.textContent || '';
+            const op = document.getElementById('op').value;
+            const montoTotal = currentOPMonto;
+            const entrega = document.getElementById('montoEntregado').value;
+            const cobranza = document.getElementById('montoCobrado').value;
+            
+            let html = `
+                <div class="summary-item"><strong>Chofer:</strong> ${chofer}</div>
+                <div class="summary-item"><strong>OP:</strong> ${op}</div>
+                <div class="summary-item"><strong>Monto Total:</strong> $${montoTotal}</div>
+                <div class="summary-item"><strong>Entrega:</strong> ${entrega === 'todo' ? 'Completa' : entrega === 'parte' ? 'Incompleta' : 'No entregado'}</div>
+                <div class="summary-item"><strong>Cobranza:</strong> ${cobranza === 'todo' ? 'Completa' : cobranza === 'parte' ? 'Incompleta' : 'No cobrado'}</div>
+            `;
+            
+            // Agregar detalles de pagos
+            const amounts = document.querySelectorAll('input[name="paymentAmount[]"]');
+            const methods = document.querySelectorAll('select[name="paymentMethod[]"]');
+            
+            if (amounts.length > 0) {
+                html += '<div class="summary-item"><strong>Pagos:</strong><ul style="margin-left: 20px;">';
+                amounts.forEach((amount, i) => {
+                    if (amount.value && methods[i].value) {
+                        html += `<li>$${amount.value} - ${methods[i].selectedOptions[0].textContent}</li>`;
+                    }
+                });
+                html += '</ul></div>';
+            }
+            
+            document.getElementById('summaryContent').innerHTML = html;
+            document.getElementById('summary').style.display = 'block';
+        }
+
+        // Manejar envío del formulario
+        document.getElementById('deliveryForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Generar resumen antes de enviar
+            generateSummary();
+            
+            // Simular procesamiento
+            const submitBtn = document.querySelector('.submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Enviando...';
+            
+            setTimeout(() => {
+                // Aquí procesarías los datos reales y los enviarías a Google Sheets
+                const result = processFormData();
+                console.log('Datos procesados:', result);
+                
+                alert('¡Formulario enviado correctamente!\n\nRevisa la consola (F12) para ver los datos que se enviarían a Google Sheets.');
+                
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Enviar Formulario';
+                
+                // Opcional: resetear formulario completo
+                // this.reset();
+                // resetForm();
+            }, 1500);
+        });
+
+        // Procesar datos del formulario para enviar a Google Sheets
+        function processFormData() {
+            const chofer = document.getElementById('chofer').selectedOptions[0]?.textContent || '';
+            const op = document.getElementById('op').value;
+            const montoTotal = currentOPMonto;
+            const entrega = document.getElementById('montoEntregado').value;
+            const cobranza = document.getElementById('montoCobrado').value;
+            
+            // Determinar valores para Google Sheets
+            const entregaTexto = entrega === 'todo' ? 'Completa' : 
+                               entrega === 'parte' ? 'Incompleta' : 'No entregado';
+            
+            const cobranzaTexto = cobranza === 'todo' ? 'Completa' : 
+                                cobranza === 'parte' ? 'Incompleta' : 'No cobrado';
+            
+            // Obtener motivos
+            let motivoEntrega = '';
+            if (entrega === 'parte') {
+                motivoEntrega = document.getElementById('motivoEntregadoParte').value;
+            } else if (entrega === 'nada') {
+                motivoEntrega = document.getElementById('motivoEntregadoNada').value;
+            }
+            
+            let motivoCobranza = '';
+            if (cobranza === 'parte') {
+                motivoCobranza = document.getElementById('motivoCobradoParte').value;
+            } else if (cobranza === 'nada') {
+                motivoCobranza = document.getElementById('motivoCobradoNada').value;
+            }
+            
+            // Obtener monto entregado
+            let montoEntregado = 0;
+            if (entrega === 'todo') {
+                montoEntregado = montoTotal;
+            } else if (entrega === 'parte') {
+                montoEntregado = parseFloat(document.getElementById('montoEntregadoValor').value) || 0;
+            }
+            
+            // Procesar pagos
+            const amounts = document.querySelectorAll('input[name="paymentAmount[]"]');
+            const methods = document.querySelectorAll('select[name="paymentMethod[]"]');
+            const photos = document.querySelectorAll('input[name="paymentPhoto[]"]');
+            
+            const rows = [];
+            let totalCobrado = 0;
+            
+            // Crear filas para cada pago
+            amounts.forEach((amount, i) => {
+                if (amount.value && methods[i].value) {
+                    const montoStr = parseFloat(amount.value);
+                    totalCobrado += montoStr;
+                    
+                    rows.push({
+                        chofer: chofer,
+                        op: op,
+                        monto: montoTotal,
+                        entregadoRechazado: entregaTexto,
+                        entrega: entrega === 'todo' ? 'Completa' : entrega,
+                        montoEntregado: montoEntregado,
+                        motivoRechazo: motivoEntrega || 'NA',
+                        cobranzaCompleta: cobranzaTexto,
+                        montoCobrado: montoStr,
+                        montoPorCobrar: 0,
+                        motivoCobranzaIncompleta: motivoCobranza || 'NA',
+                        metodoPago: methods[i].selectedOptions[0].textContent,
+                        linkFoto: photos[i].files[0] ? 'URL_DE_GOOGLE_DRIVE_AQUI' : 'NA'
+                    });
+                }
+            });
+            
+            // Agregar fila para saldo pendiente si existe
+            if (totalCobrado < montoTotal && totalCobrado > 0) {
                 rows.push({
                     chofer: chofer,
                     op: op,
@@ -707,45 +745,27 @@ body {
                     entrega: entrega === 'todo' ? 'Completa' : entrega,
                     montoEntregado: montoEntregado,
                     motivoRechazo: motivoEntrega || 'NA',
-                    cobranzaCompleta: cobranzaTexto,
-                    montoCobrado: montoStr,
-                    montoPorCobrar: 0,
-                    motivoCobranzaIncompleta: motivoCobranza || 'NA',
-                    metodoPago: methods[i].selectedOptions[0].textContent,
-                    linkFoto: photos[i].files[0] ? 'URL_DE_GOOGLE_DRIVE_AQUI' : 'NA'
+                    cobranzaCompleta: 'Incompleta',
+                    montoCobrado: 0,
+                    montoPorCobrar: montoTotal - totalCobrado,
+                    motivoCobranzaIncompleta: 'Saldo pendiente',
+                    metodoPago: 'Pendiente',
+                    linkFoto: 'NA'
                 });
             }
-        });
-        
-        // Agregar fila para saldo pendiente si existe
-        if (totalCobrado < montoTotal && totalCobrado > 0) {
-            rows.push({
-                chofer: chofer,
-                op: op,
-                monto: montoTotal,
-                entregadoRechazado: entregaTexto,
-                entrega: entrega === 'todo' ? 'Completa' : entrega,
-                montoEntregado: montoEntregado,
-                motivoRechazo: motivoEntrega || 'NA',
-                cobranzaCompleta: 'Incompleta',
-                montoCobrado: 0,
-                montoPorCobrar: montoTotal - totalCobrado,
-                motivoCobranzaIncompleta: 'Saldo pendiente',
-                metodoPago: 'Pendiente',
-                linkFoto: 'NA'
-            });
+            
+            return {
+                metadata: {
+                    chofer: chofer,
+                    op: op,
+                    montoTotal: montoTotal,
+                    entrega: entregaTexto,
+                    cobranza: cobranzaTexto
+                },
+                rows: rows,
+                photos: Array.from(photos).filter(p => p.files[0]).map(p => p.files[0])
+            };
         }
-        
-        return {
-            metadata: {
-                chofer: chofer,
-                op: op,
-                montoTotal: montoTotal,
-                entrega: entregaTexto,
-                cobranza: cobranzaTexto
-            },
-            rows: rows,
-            photos: Array.from(photos).filter(p => p.files[0]).map(p => p.files[0])
-        };
-    }
-</script>
+    </script>
+</body>
+</html>
