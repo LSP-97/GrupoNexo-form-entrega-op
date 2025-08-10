@@ -46,7 +46,7 @@
             font-size: 16px;
         }
 
-        select, input[type="number"], textarea, input[type="file"] {
+        select, input[type="number"], textarea {
             width: 100%;
             padding: 12px;
             border: 2px solid #ddd;
@@ -113,11 +113,56 @@
             width: 100%;
         }
 
+        .photo-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .photo-btn {
+            flex: 1;
+            padding: 12px 8px;
+            border: 2px solid #007bff;
+            background-color: #007bff;
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .photo-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .photo-btn.secondary {
+            background-color: white;
+            color: #007bff;
+        }
+
+        .photo-btn.secondary:hover {
+            background-color: #f8f9fa;
+        }
+
+        .hidden-input {
+            display: none;
+        }
+
         .photo-preview {
             max-width: 100%;
             max-height: 100px;
             border-radius: 4px;
             margin-top: 10px;
+            display: none;
+            border: 2px solid #ddd;
+        }
+
+        .photo-info {
+            margin-top: 10px;
+            padding: 8px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            font-size: 14px;
             display: none;
         }
 
@@ -501,9 +546,15 @@
                 </div>
                 <div class="form-group photo">
                     <label>Foto:</label>
-                    <input type="file" name="paymentPhoto[]" accept="image/*" style="display:none;" onchange="previewPhoto(this)">
+                    <div class="photo-buttons" style="display:none;">
+                        <button type="button" class="photo-btn" onclick="takePhoto(${paymentCounter})">📸 Tomar Foto</button>
+                        <button type="button" class="photo-btn secondary" onclick="selectFromGallery(${paymentCounter})">🖼️ Galería</button>
+                    </div>
+                    <input type="file" name="paymentPhoto[]" accept="image/*" capture="environment" class="hidden-input" id="camera-${paymentCounter}" onchange="previewPhoto(this)">
+                    <input type="file" name="paymentPhoto[]" accept="image/*" class="hidden-input" id="gallery-${paymentCounter}" onchange="previewPhoto(this)">
                     <div class="photo-status">-</div>
                     <img class="photo-preview" style="display:none;">
+                    <div class="photo-info" style="display:none;"></div>
                 </div>
                 ${!isFirst ? `<button type="button" class="remove-btn" onclick="removePaymentRow(${paymentCounter})">Eliminar</button>` : ''}
             `;
@@ -512,29 +563,59 @@
             updatePaymentSummary();
         }
 
+        // Tomar foto con cámara
+        function takePhoto(paymentId) {
+            document.getElementById(`camera-${paymentId}`).click();
+        }
+
+        // Seleccionar de galería
+        function selectFromGallery(paymentId) {
+            document.getElementById(`gallery-${paymentId}`).click();
+        }
+
         // Mostrar/ocultar input de foto según el medio de pago
         function togglePhotoInput(select) {
             const row = select.closest('.payment-row');
-            const photoInput = row.querySelector('input[type="file"]');
+            const photoButtons = row.querySelector('.photo-buttons');
             const photoStatus = row.querySelector('.photo-status');
             
             if (select.value === 'qr' || select.value === 'transferencia') {
-                photoInput.style.display = 'block';
-                photoInput.required = true;
+                photoButtons.style.display = 'flex';
                 photoStatus.textContent = 'Requerida';
                 photoStatus.style.color = 'red';
+                
+                // Hacer requeridos los inputs de foto
+                const cameraInput = row.querySelector('input[accept*="capture"]');
+                const galleryInput = row.querySelector('input:not([accept*="capture"])');
+                cameraInput.required = true;
+                galleryInput.required = true;
             } else if (select.value === 'efectivo') {
-                photoInput.style.display = 'none';
-                photoInput.required = false;
-                photoInput.value = '';
+                photoButtons.style.display = 'none';
                 photoStatus.textContent = 'No requerida';
                 photoStatus.style.color = 'green';
+                
+                // Limpiar inputs de foto
+                const cameraInput = row.querySelector('input[accept*="capture"]');
+                const galleryInput = row.querySelector('input:not([accept*="capture"])');
+                cameraInput.required = false;
+                galleryInput.required = false;
+                cameraInput.value = '';
+                galleryInput.value = '';
+                
+                // Ocultar preview
+                const preview = row.querySelector('.photo-preview');
+                const info = row.querySelector('.photo-info');
+                preview.style.display = 'none';
+                info.style.display = 'none';
             } else {
-                photoInput.style.display = 'none';
-                photoInput.required = false;
-                photoInput.value = '';
+                photoButtons.style.display = 'none';
                 photoStatus.textContent = '-';
                 photoStatus.style.color = 'black';
+                
+                const cameraInput = row.querySelector('input[accept*="capture"]');
+                const galleryInput = row.querySelector('input:not([accept*="capture"])');
+                cameraInput.required = false;
+                galleryInput.required = false;
             }
         }
 
@@ -542,14 +623,34 @@
         function previewPhoto(input) {
             const row = input.closest('.payment-row');
             const preview = row.querySelector('.photo-preview');
+            const info = row.querySelector('.photo-info');
+            const status = row.querySelector('.photo-status');
             
             if (input.files && input.files[0]) {
+                const file = input.files[0];
                 const reader = new FileReader();
+                
                 reader.onload = function(e) {
                     preview.src = e.target.result;
                     preview.style.display = 'block';
+                    
+                    // Mostrar info del archivo
+                    const sizeKB = (file.size / 1024).toFixed(1);
+                    info.textContent = `📁 ${file.name} (${sizeKB} KB)`;
+                    info.style.display = 'block';
+                    
+                    // Actualizar status
+                    status.textContent = '✅ Foto adjuntada';
+                    status.style.color = 'green';
                 };
-                reader.readAsDataURL(input.files[0]);
+                
+                reader.readAsDataURL(file);
+                
+                // Limpiar el otro input (para evitar duplicados)
+                const otherInput = input.id.includes('camera') ? 
+                    row.querySelector('#gallery-' + input.id.split('-')[1]) :
+                    row.querySelector('#camera-' + input.id.split('-')[1]);
+                if (otherInput) otherInput.value = '';
             }
         }
 
@@ -684,89 +785,108 @@
             // Obtener motivos
             let motivoEntrega = '';
             if (entrega === 'parte') {
-                motivoEntrega = document.getElementById('motivoEntregadoParte').value;
-            } else if (entrega === 'nada') {
-                motivoEntrega = document.getElementById('motivoEntregadoNada').value;
-            }
-            
-            let motivoCobranza = '';
-            if (cobranza === 'parte') {
-                motivoCobranza = document.getElementById('motivoCobradoParte').value;
-            } else if (cobranza === 'nada') {
-                motivoCobranza = document.getElementById('motivoCobradoNada').value;
-            }
-            
-            // Obtener monto entregado
-            let montoEntregado = 0;
-            if (entrega === 'todo') {
-                montoEntregado = montoTotal;
-            } else if (entrega === 'parte') {
-                montoEntregado = parseFloat(document.getElementById('montoEntregadoValor').value) || 0;
-            }
-            
-            // Procesar pagos
-            const amounts = document.querySelectorAll('input[name="paymentAmount[]"]');
-            const methods = document.querySelectorAll('select[name="paymentMethod[]"]');
-            const photos = document.querySelectorAll('input[name="paymentPhoto[]"]');
-            
-            const rows = [];
-            let totalCobrado = 0;
-            
-            // Crear filas para cada pago
-            amounts.forEach((amount, i) => {
-                if (amount.value && methods[i].value) {
-                    const montoStr = parseFloat(amount.value);
-                    totalCobrado += montoStr;
-                    
-                    rows.push({
-                        chofer: chofer,
-                        op: op,
-                        monto: montoTotal,
-                        entregadoRechazado: entregaTexto,
-                        entrega: entrega === 'todo' ? 'Completa' : entrega,
-                        montoEntregado: montoEntregado,
-                        motivoRechazo: motivoEntrega || 'NA',
-                        cobranzaCompleta: cobranzaTexto,
-                        montoCobrado: montoStr,
-                        montoPorCobrar: 0,
-                        motivoCobranzaIncompleta: motivoCobranza || 'NA',
-                        metodoPago: methods[i].selectedOptions[0].textContent,
-                        linkFoto: photos[i].files[0] ? 'URL_DE_GOOGLE_DRIVE_AQUI' : 'NA'
-                    });
-                }
-            });
-            
-            // Agregar fila para saldo pendiente si existe
-            if (totalCobrado < montoTotal && totalCobrado > 0) {
-                rows.push({
-                    chofer: chofer,
-                    op: op,
-                    monto: montoTotal,
-                    entregadoRechazado: entregaTexto,
-                    entrega: entrega === 'todo' ? 'Completa' : entrega,
-                    montoEntregado: montoEntregado,
-                    motivoRechazo: motivoEntrega || 'NA',
-                    cobranzaCompleta: 'Incompleta',
-                    montoCobrado: 0,
-                    montoPorCobrar: montoTotal - totalCobrado,
-                    motivoCobranzaIncompleta: 'Saldo pendiente',
-                    metodoPago: 'Pendiente',
-                    linkFoto: 'NA'
-                });
-            }
-            
-            return {
-                metadata: {
-                    chofer: chofer,
-                    op: op,
-                    montoTotal: montoTotal,
-                    entrega: entregaTexto,
-                    cobranza: cobranzaTexto
-                },
-                rows: rows,
-                photos: Array.from(photos).filter(p => p.files[0]).map(p => p.files[0])
-            };
-        }
-    </script>
+               motivoEntrega = document.getElementById('motivoEntregadoParte').value;
+           } else if (entrega === 'nada') {
+               motivoEntrega = document.getElementById('motivoEntregadoNada').value;
+           }
+           
+           let motivoCobranza = '';
+           if (cobranza === 'parte') {
+               motivoCobranza = document.getElementById('motivoCobradoParte').value;
+           } else if (cobranza === 'nada') {
+               motivoCobranza = document.getElementById('motivoCobradoNada').value;
+           }
+           
+           // Obtener monto entregado
+           let montoEntregado = 0;
+           if (entrega === 'todo') {
+               montoEntregado = montoTotal;
+           } else if (entrega === 'parte') {
+               montoEntregado = parseFloat(document.getElementById('montoEntregadoValor').value) || 0;
+           }
+           
+           // Procesar pagos
+           const amounts = document.querySelectorAll('input[name="paymentAmount[]"]');
+           const methods = document.querySelectorAll('select[name="paymentMethod[]"]');
+           
+           const rows = [];
+           let totalCobrado = 0;
+           
+           // Crear filas para cada pago
+           amounts.forEach((amount, i) => {
+               if (amount.value && methods[i].value) {
+                   const montoStr = parseFloat(amount.value);
+                   totalCobrado += montoStr;
+                   
+                   // Buscar foto asociada a este pago
+                   const paymentRow = amount.closest('.payment-row');
+                   const cameraInput = paymentRow.querySelector('input[accept*="capture"]');
+                   const galleryInput = paymentRow.querySelector('input:not([accept*="capture"])');
+                   
+                   let hasPhoto = false;
+                   if (cameraInput && cameraInput.files[0]) {
+                       hasPhoto = true;
+                   } else if (galleryInput && galleryInput.files[0]) {
+                       hasPhoto = true;
+                   }
+                   
+                   rows.push({
+                       chofer: chofer,
+                       op: op,
+                       monto: montoTotal,
+                       entregadoRechazado: entregaTexto,
+                       entrega: entrega === 'todo' ? 'Completa' : entrega,
+                       montoEntregado: montoEntregado,
+                       motivoRechazo: motivoEntrega || 'NA',
+                       cobranzaCompleta: cobranzaTexto,
+                       montoCobrado: montoStr,
+                       montoPorCobrar: 0,
+                       motivoCobranzaIncompleta: motivoCobranza || 'NA',
+                       metodoPago: methods[i].selectedOptions[0].textContent,
+                       linkFoto: hasPhoto ? 'URL_DE_GOOGLE_DRIVE_AQUI' : 'NA'
+                   });
+               }
+           });
+           
+           // Agregar fila para saldo pendiente si existe
+           if (totalCobrado < montoTotal && totalCobrado > 0) {
+               rows.push({
+                   chofer: chofer,
+                   op: op,
+                   monto: montoTotal,
+                   entregadoRechazado: entregaTexto,
+                   entrega: entrega === 'todo' ? 'Completa' : entrega,
+                   montoEntregado: montoEntregado,
+                   motivoRechazo: motivoEntrega || 'NA',
+                   cobranzaCompleta: 'Incompleta',
+                   montoCobrado: 0,
+                   montoPorCobrar: montoTotal - totalCobrado,
+                   motivoCobranzaIncompleta: 'Saldo pendiente',
+                   metodoPago: 'Pendiente',
+                   linkFoto: 'NA'
+               });
+           }
+           
+           // Recopilar todas las fotos
+           const allPhotos = [];
+           document.querySelectorAll('input[type="file"]').forEach(input => {
+               if (input.files[0]) {
+                   allPhotos.push(input.files[0]);
+               }
+           });
+           
+           return {
+               metadata: {
+                   chofer: chofer,
+                   op: op,
+                   montoTotal: montoTotal,
+                   entrega: entregaTexto,
+                   cobranza: cobranzaTexto
+               },
+               rows: rows,
+               photos: allPhotos
+           };
+       }
+   </script>
 </body>
 </html>
