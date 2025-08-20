@@ -556,7 +556,7 @@ async function loadTodaysData() {
     }
 }
                 
-            } catch (error) {
+             catch (error) {
                 console.error('Error cargando datos:', error);
                 document.getElementById('errorMessage').textContent = 'Error al cargar datos del día. Usando datos de ejemplo.';
                 document.getElementById('errorMessage').style.display = 'block';
