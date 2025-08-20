@@ -478,58 +478,83 @@
         }
 
         // Cargar datos desde Google Sheets
-        async function loadTodaysData() {
-            try {
-                document.getElementById('loadingMessage').textContent = 'Obteniendo token de acceso...';
-                
-                // Por ahora usaremos método público simplificado
-                const today = new Date();
-                const todayStr = `${today.getDate().toString().padStart(2, '0')}/${(today.getMonth() + 1).toString().padStart(2, '0')}/${today.getFullYear()}`;
-                
-                document.getElementById('loadingMessage').textContent = `Cargando datos para ${todayStr}...`;
-                
-                // URL para acceso público a Google Sheets
-                const sheetUrl = `https://docs.google.com/spreadsheets/d/${CONFIG.SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=input`;
-                
-                const response = await fetch(sheetUrl);
-                const text = await response.text();
-                
-                // Limpiar respuesta de Google Sheets
-                const jsonText = text.substring(47).slice(0, -2);
-                const data = JSON.parse(jsonText);
-                
-                // Procesar datos
-                const rows = data.table.rows;
-                const todaysData = {};
-                
-                rows.forEach(row => {
-                    const fecha = row.c[0]?.v;
-                    const chofer = row.c[1]?.v;
-                    const op = row.c[2]?.v;
-                    const monto = row.c[3]?.v;
+async function loadTodaysData() {
+    try {
+        const today = new Date();
+        const todayStr = `${today.getDate().toString().padStart(2, '0')}/${(today.getMonth() + 1).toString().padStart(2, '0')}/${today.getFullYear()}`;
+        
+        document.getElementById('loadingMessage').textContent = `Cargando datos para ${todayStr}...`;
+        
+        // URL para acceso público a Google Sheets
+        const sheetUrl = `https://docs.google.com/spreadsheets/d/${CONFIG.SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=input`;
+        
+        const response = await fetch(sheetUrl);
+        const text = await response.text();
+        
+        // Limpiar respuesta de Google Sheets
+        const jsonText = text.substring(47).slice(0, -2);
+        const data = JSON.parse(jsonText);
+        
+        // Procesar datos
+        const rows = data.table.rows;
+        const todaysData = {};
+        
+        rows.forEach(row => {
+            const fechaValue = row.c[0]?.v; // "Date(2025,7,20)"
+            const chofer = row.c[1]?.v;
+            const op = row.c[2]?.v;
+            const monto = row.c[3]?.v;
+            
+            if (fechaValue && chofer && op && monto) {
+                // Extraer fecha de formato "Date(2025,7,20)"
+                const dateMatch = fechaValue.match(/Date\\((\\d+),(\\d+),(\\d+)\\)/);
+                if (dateMatch) {
+                    const year = parseInt(dateMatch[1]);
+                    const month = parseInt(dateMatch[2]); // Ya viene en formato 0-11
+                    const day = parseInt(dateMatch[3]);
                     
-                    if (fecha && chofer && op && monto) {
-                        // Convertir fecha de Google Sheets a formato comparable
-                        const dateObj = new Date(fecha);
-                        const formattedDate = `${dateObj.getDate().toString().padStart(2, '0')}/${(dateObj.getMonth() + 1).toString().padStart(2, '0')}/${dateObj.getFullYear()}`;
-                        
-                        if (formattedDate === todayStr) {
-                            if (!todaysData[chofer]) {
-                                todaysData[chofer] = [];
-                            }
-                            todaysData[chofer].push({
-                                op: op.toString(),
-                                monto: parseFloat(monto)
-                            });
+                    // Crear fecha y compararla con hoy
+                    const rowDate = new Date(year, month, day);
+                    const todayDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+                    
+                    if (rowDate.getTime() === todayDate.getTime()) {
+                        if (!todaysData[chofer]) {
+                            todaysData[chofer] = [];
                         }
+                        todaysData[chofer].push({
+                            op: op.toString(),
+                            monto: parseFloat(monto)
+                        });
                     }
-                });
-                
-                choferesData = todaysData;
-                populateChoferesDropdown();
-                
-                document.getElementById('loadingMessage').style.display = 'none';
-                document.getElementById('deliveryForm').style.display = 'block';
+                }
+            }
+        });
+        
+        choferesData = todaysData;
+        populateChoferesDropdown();
+        
+        document.getElementById('loadingMessage').style.display = 'none';
+        document.getElementById('deliveryForm').style.display = 'block';
+        
+        // Debug: mostrar qué datos se cargaron
+        console.log('Datos cargados para hoy:', todaysData);
+        
+    } catch (error) {
+        console.error('Error cargando datos:', error);
+        document.getElementById('errorMessage').textContent = 'Error al cargar datos del día. Usando datos de ejemplo.';
+        document.getElementById('errorMessage').style.display = 'block';
+        
+        // Datos de fallback
+        choferesData = {
+            George: [{op: '123', monto: 1000}],
+            Jose: [{op: '456', monto: 850}]
+        };
+        populateChoferesDropdown();
+        
+        document.getElementById('loadingMessage').style.display = 'none';
+        document.getElementById('deliveryForm').style.display = 'block';
+    }
+}
                 
             } catch (error) {
                 console.error('Error cargando datos:', error);
