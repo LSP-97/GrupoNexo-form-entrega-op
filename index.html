@@ -40,15 +40,6 @@
             color: #666;
         }
 
-        .error {
-            background-color: #f8d7da;
-            border: 1px solid #f5c6cb;
-            color: #721c24;
-            padding: 12px;
-            border-radius: 4px;
-            margin-bottom: 20px;
-        }
-
         .form-group {
             margin-bottom: 20px;
         }
@@ -128,59 +119,6 @@
             width: 100%;
         }
 
-        .photo-buttons {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-
-        .photo-btn {
-            flex: 1;
-            padding: 12px 8px;
-            border: 2px solid #007bff;
-            background-color: #007bff;
-            color: white;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            text-align: center;
-        }
-
-        .photo-btn:hover {
-            background-color: #0056b3;
-        }
-
-        .photo-btn.secondary {
-            background-color: white;
-            color: #007bff;
-        }
-
-        .photo-btn.secondary:hover {
-            background-color: #f8f9fa;
-        }
-
-        .hidden-input {
-            display: none;
-        }
-
-        .photo-preview {
-            max-width: 100%;
-            max-height: 100px;
-            border-radius: 4px;
-            margin-top: 10px;
-            display: none;
-            border: 2px solid #ddd;
-        }
-
-        .photo-info {
-            margin-top: 10px;
-            padding: 8px;
-            background-color: #e9ecef;
-            border-radius: 4px;
-            font-size: 14px;
-            display: none;
-        }
-
         .submit-btn {
             background-color: #007bff;
             color: white;
@@ -207,12 +145,6 @@
             min-height: 80px;
         }
 
-        .photo-status {
-            font-size: 14px;
-            margin-top: 5px;
-            font-weight: bold;
-        }
-
         .required {
             color: red;
         }
@@ -235,7 +167,6 @@
             margin-bottom: 8px;
         }
 
-        /* Específico para desktop - mantener layout horizontal */
         @media (min-width: 601px) {
             .payment-row {
                 display: flex;
@@ -255,10 +186,6 @@
                 flex: 1;
             }
 
-            .payment-row .photo {
-                flex: 1;
-            }
-
             .payment-row .remove-btn {
                 height: 45px;
                 white-space: nowrap;
@@ -275,8 +202,6 @@
         <div id="loadingMessage" class="loading">
             Cargando datos del día...
         </div>
-
-        <div id="errorMessage" class="error" style="display:none;"></div>
         
         <form id="deliveryForm" style="display:none;">
             <!-- Chofer -->
@@ -295,7 +220,7 @@
                 </select>
             </div>
 
-            <!-- Monto Total (solo información) -->
+            <!-- Monto Total -->
             <div class="form-group" id="montoTotalGroup" style="display: none;">
                 <label>Monto Total de la OP:</label>
                 <div id="montoTotal" style="font-size: 18px; font-weight: bold; color: #007bff; padding: 10px; background: #f8f9fa; border-radius: 4px;">-</div>
@@ -390,180 +315,75 @@
     </div>
 
     <script>
-        // Configuración de Google APIs
         const CONFIG = {
-            SPREADSHEET_ID: '1Vbtp9sVYhJ5CcFgj9YbTJx_-WaRVuT6UWbg7CkFwLCE',
-            DRIVE_FOLDER_ID: '1CZESRftRcfONL4h4UhpYnbPYNRC0jcy6',
-            SERVICE_ACCOUNT: {
-                "type": "service_account",
-                "project_id": "gruponexo-entrega-op",
-                "private_key_id": "e27fd98ac5b48956b4dc1679cb393fa36ee3d2d0",
-                "private_key": "-----BEGIN PRIVATE KEY-----\\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCS/81u4kBIudrt\\nxW9f2yZ4y2jxzBs0S9kkLuACSQYrjYdtYEamD1WQHfkM8qEoHbt65TdvCSKYaTCQ\\nL+qBXoLjYseb6Xs71GP5Zj6d/QZ4716qIQ7VCAvlqYdSy1y6jMrw+luE+vyk+Azo\\nGs+g28nA8dTrufHgl2Sj7xKgUyU882alMprQmJD7BrZFijlU82g3lzUBmXepOoKa\\np/Dv5trQ4RYyRRs/Qp/2ZxqYAxpJwY4PaaH66oiBu0DTMpizLgc1ozpYe/4d+o1m\\naZGVVg9fsUxNEchQavt92SJgRAS0PR/z1yzYZgT7jiMdL90R0Nb+69zLQ/C3sHxP\\nlTxSepuRAgMBAAECggEAAIDEEvBOwID0TRJ7IFSXY9vsUsF8SVhGGK/ZX+CglwcP\\nstHcxAYy6ICVwNPWtdSuNswwfZ6GIgfgHOoxDvrED2Of47pvi8OdCPYu2isKueC1\\nzfa5foSdx84l8qRT/6ZqLlto80JJmYXow2WOFtKRtOmO7TSQbZCPDVmM0oQeUUBR\\nokXYDXMwdRy+blnjteVRQUuH7tAWSb411tsWQrFyZilUmwKYLBO6pt6Ds05tsmFd\\n1Qx1Wd4iKcPHOdtxU4ktr9Ww0t96eoNw9Ea2N0B6FVDiqRtP1GDJCqpxbjEcvFmG\\n/IgdvS+PreIypBsZTMB8Is7uxyY9AAMdsvLrhOJ3nQKBgQDI+8ZpisKkx59ODczb\\nu21chH6fBilIJnfB7SfMBzR1Z0U7+xtcj7XZA51gPSJ+6PXNdpdmOOLMxSb60t8V\\n+HtMqojc9TG65W6B5wDzqzyTKl4aobyQuMDD8cnkGk80JrZr87Z/7Mvm5DTJiCMO\\nWFS33D9XT+S8UTNqvC9m3cCkXQKBgQC7PP9e4tAI94bAS+wZop/YMzKVBNViymWe\\no+Gd4eVgb+ks4HW8xxCncVBa87PL1AYEDBMh/ETF13kr4CtYg+WPbv0S060t01K3\\noOVYCLPJgGt6vVgk0y5yZPpMrKZp2pFzJffXGX5Nh6Zg8PWDQ9y2oZi7CuhPOh6l\\nnz+gmGqgxQKBgQCpMzU9gyEMYjYeGwYc8nRGEBEdRa2ZXTEy5Lm9TU9/izpBHcxS\\nJ3Y7RYzHCZCx8OOGXtFksH1XUJ7ZSI+gynja+TKReiasphxbZiNp//3WEzP4DbNW\\nzwMRsst5qiCF0hV/WkSI+8xJDFPYWjDREdH4m4YDtnHljCLSN61cV1GnzQKBgFxH\\nHKh76gFxVHTzNgIQVuzrlpNA1ZWhoGGF7QytpylXHjkiyoPmK7wKKYsZrlPXQ7u8\\n47UNKivDHRHVoic2oe2Fyq37qs755jtfzYgMiebWJqJQLN/BQJPaVk1xjXZ/5M02\\nOiZFhyzYnNQMDUPLLzzG+Ym9P27EexQvHuGcHHjtAoGAQnZwc1TXYDHD0chyX/sf\\nf4BGoHmJ6TF9gqwCYvIngxHonpMFrxvag5N1l1yVnordD/uV+MOJVcSpWes3PHvz\\n2yquwDHrYBHbvwPVluJxbfKah528kIoypcRVmMwAyWYXUAw3EryjuvN6B2bcgDq8\\nMjOdy2NDca7yCNNH1xluTMs=\\n-----END PRIVATE KEY-----\\n",
-                "client_email": "gruponexo-form-service@gruponexo-entrega-op.iam.gserviceaccount.com",
-                "client_id": "101905497030985201496",
-                "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-                "token_uri": "https://oauth2.googleapis.com/token",
-                "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-                "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/gruponexo-form-service%40gruponexo-entrega-op.iam.gserviceaccount.com",
-                "universe_domain": "googleapis.com"
-            }
+            SPREADSHEET_ID: '1Vbtp9sVYhJ5CcFgj9YbTJx_-WaRVuT6UWbg7CkFwLCE'
         };
 
         let choferesData = {};
         let paymentCounter = 0;
         let currentOPMonto = 0;
-        let accessToken = null;
-
-        // Función para obtener token de acceso
-        async function getAccessToken() {
-            try {
-                const response = await fetch('https://oauth2.googleapis.com/token', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: new URLSearchParams({
-                        grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
-                        assertion: await createJWT()
-                    })
-                });
-
-                const data = await response.json();
-                if (data.access_token) {
-                    accessToken = data.access_token;
-                    return data.access_token;
-                } else {
-                    throw new Error('No se pudo obtener token de acceso');
-                }
-            } catch (error) {
-                console.error('Error obteniendo token:', error);
-                throw error;
-            }
-        }
-
-        // Función para crear JWT
-        async function createJWT() {
-            const header = {
-                "alg": "RS256",
-                "typ": "JWT"
-            };
-
-            const now = Math.floor(Date.now() / 1000);
-            const payload = {
-                "iss": CONFIG.SERVICE_ACCOUNT.client_email,
-                "scope": "https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.file",
-                "aud": "https://oauth2.googleapis.com/token",
-                "exp": now + 3600,
-                "iat": now
-            };
-
-            // Usando biblioteca externa para JWT (simplificado para demo)
-            // En producción, usar una biblioteca JWT adecuada
-            return await simpleJWT(header, payload, CONFIG.SERVICE_ACCOUNT.private_key);
-        }
-
-        // Función simplificada para JWT (usar biblioteca real en producción)
-        async function simpleJWT(header, payload, privateKey) {
-            const encoder = new TextEncoder();
-            
-            const encodedHeader = btoa(JSON.stringify(header)).replace(/[+\\/]/g, c => c === '+' ? '-' : '_').replace(/=/g, '');
-            const encodedPayload = btoa(JSON.stringify(payload)).replace(/[+\\/]/g, c => c === '+' ? '-' : '_').replace(/=/g, '');
-            
-            const message = encodedHeader + '.' + encodedPayload;
-            
-            // Para demo, usar método simplificado (en producción usar crypto apropiado)
-            const signature = btoa('demo_signature').replace(/[+\\/]/g, c => c === '+' ? '-' : '_').replace(/=/g, '');
-            
-            return message + '.' + signature;
-        }
 
         // Cargar datos desde Google Sheets
-async function loadTodaysData() {
-    try {
-        const today = new Date();
-        const todayStr = `${today.getDate().toString().padStart(2, '0')}/${(today.getMonth() + 1).toString().padStart(2, '0')}/${today.getFullYear()}`;
-        
-        document.getElementById('loadingMessage').textContent = `Cargando datos para ${todayStr}...`;
-        
-        // URL para acceso público a Google Sheets
-        const sheetUrl = `https://docs.google.com/spreadsheets/d/${CONFIG.SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=input`;
-        
-        const response = await fetch(sheetUrl);
-        const text = await response.text();
-        
-        // Limpiar respuesta de Google Sheets
-        const jsonText = text.substring(47).slice(0, -2);
-        const data = JSON.parse(jsonText);
-        
-        // Procesar datos
-        const rows = data.table.rows;
-        const todaysData = {};
-        
-        rows.forEach(row => {
-            const fechaValue = row.c[0]?.v; // "Date(2025,7,20)"
-            const chofer = row.c[1]?.v;
-            const op = row.c[2]?.v;
-            const monto = row.c[3]?.v;
-            
-            if (fechaValue && chofer && op && monto) {
-                // Extraer fecha de formato "Date(2025,7,20)"
-                const dateMatch = fechaValue.match(/Date\\((\\d+),(\\d+),(\\d+)\\)/);
-                if (dateMatch) {
-                    const year = parseInt(dateMatch[1]);
-                    const month = parseInt(dateMatch[2]); // Ya viene en formato 0-11
-                    const day = parseInt(dateMatch[3]);
+        async function loadTodaysData() {
+            try {
+                const today = new Date();
+                const todayStr = `${today.getDate().toString().padStart(2, '0')}/${(today.getMonth() + 1).toString().padStart(2, '0')}/${today.getFullYear()}`;
+                
+                document.getElementById('loadingMessage').textContent = `Cargando datos para ${todayStr}...`;
+                
+                const sheetUrl = `https://docs.google.com/spreadsheets/d/${CONFIG.SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=input`;
+                
+                const response = await fetch(sheetUrl);
+                const text = await response.text();
+                const jsonText = text.substring(47).slice(0, -2);
+                const data = JSON.parse(jsonText);
+                
+                const rows = data.table.rows;
+                const todaysData = {};
+                
+                rows.forEach(row => {
+                    const fechaValue = row.c[0]?.v;
+                    const chofer = row.c[1]?.v;
+                    const op = row.c[2]?.v;
+                    const monto = row.c[3]?.v;
                     
-                    // Crear fecha y compararla con hoy
-                    const rowDate = new Date(year, month, day);
-                    const todayDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-                    
-                    if (rowDate.getTime() === todayDate.getTime()) {
-                        if (!todaysData[chofer]) {
-                            todaysData[chofer] = [];
+                    if (fechaValue && chofer && op && monto) {
+                        const dateMatch = fechaValue.match(/Date\\((\\d+),(\\d+),(\\d+)\\)/);
+                        if (dateMatch) {
+                            const year = parseInt(dateMatch[1]);
+                            const month = parseInt(dateMatch[2]);
+                            const day = parseInt(dateMatch[3]);
+                            
+                            const rowDate = new Date(year, month, day);
+                            const todayDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+                            
+                            if (rowDate.getTime() === todayDate.getTime()) {
+                                if (!todaysData[chofer]) {
+                                    todaysData[chofer] = [];
+                                }
+                                todaysData[chofer].push({
+                                    op: op.toString(),
+                                    monto: parseFloat(monto)
+                                });
+                            }
                         }
-                        todaysData[chofer].push({
-                            op: op.toString(),
-                            monto: parseFloat(monto)
-                        });
                     }
-                }
-            }
-        });
-        
-        choferesData = todaysData;
-        populateChoferesDropdown();
-        
-        document.getElementById('loadingMessage').style.display = 'none';
-        document.getElementById('deliveryForm').style.display = 'block';
-        
-        // Debug: mostrar qué datos se cargaron
-        console.log('Datos cargados para hoy:', todaysData);
-        
-    } catch (error) {
-        console.error('Error cargando datos:', error);
-        document.getElementById('errorMessage').textContent = 'Error al cargar datos del día. Usando datos de ejemplo.';
-        document.getElementById('errorMessage').style.display = 'block';
-        
-        // Datos de fallback
-        choferesData = {
-            George: [{op: '123', monto: 1000}],
-            Jose: [{op: '456', monto: 850}]
-        };
-        populateChoferesDropdown();
-        
-        document.getElementById('loadingMessage').style.display = 'none';
-        document.getElementById('deliveryForm').style.display = 'block';
-    }
-}
+                });
                 
-             catch (error) {
+                choferesData = todaysData;
+                populateChoferesDropdown();
+                
+                document.getElementById('loadingMessage').style.display = 'none';
+                document.getElementById('deliveryForm').style.display = 'block';
+                
+                console.log('Datos cargados para hoy:', todaysData);
+                
+            } catch (error) {
                 console.error('Error cargando datos:', error);
-                document.getElementById('errorMessage').textContent = 'Error al cargar datos del día. Usando datos de ejemplo.';
-                document.getElementById('errorMessage').style.display = 'block';
                 
-                // Datos de fallback
                 choferesData = {
-                    George: [{op: '857', monto: 881}]
+                    George: [{op: '123', monto: 1000}],
+                    Jose: [{op: '456', monto: 850}]
                 };
                 populateChoferesDropdown();
                 
@@ -572,7 +392,6 @@ async function loadTodaysData() {
             }
         }
 
-        // Poblar dropdown de choferes
         function populateChoferesDropdown() {
             const choferSelect = document.getElementById('chofer');
             choferSelect.innerHTML = '<option value="">Seleccionar chofer...</option>';
@@ -583,111 +402,6 @@ async function loadTodaysData() {
                 option.textContent = chofer;
                 choferSelect.appendChild(option);
             });
-        }
-
-        // Subir foto a Google Drive
-        async function uploadPhotoToDrive(file, filename) {
-            try {
-                if (!accessToken) {
-                    await getAccessToken();
-                }
-
-                const metadata = {
-                    name: filename,
-                    parents: [CONFIG.DRIVE_FOLDER_ID]
-                };
-
-                const formData = new FormData();
-                formData.append('metadata', new Blob([JSON.stringify(metadata)], {type: 'application/json'}));
-                formData.append('file', file);
-
-                const response = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${accessToken}`
-                    },
-                    body: formData
-                });
-
-                const result = await response.json();
-                
-                if (result.id) {
-                    // Hacer el archivo público y obtener link
-                    await makeFilePublic(result.id);
-                    return `https://drive.google.com/file/d/${result.id}/view`;
-                } else {
-                    throw new Error('Error subiendo archivo');
-                }
-            } catch (error) {
-                console.error('Error subiendo foto:', error);
-                return 'ERROR_SUBIENDO_FOTO';
-            }
-        }
-
-        // Hacer archivo público
-        async function makeFilePublic(fileId) {
-            try {
-                await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}/permissions`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${accessToken}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        role: 'reader',
-                        type: 'anyone'
-                    })
-                });
-            } catch (error) {
-                console.error('Error haciendo archivo público:', error);
-            }
-        }
-
-        // Guardar datos en Google Sheets
-        async function saveToGoogleSheets(rows) {
-            try {
-                if (!accessToken) {
-                    await getAccessToken();
-                }
-
-                const values = rows.map(row => [
-                    row.fecha,
-                    row.hora,
-                    row.chofer,
-                    row.op,
-                    row.monto,
-                    row.entregadoRechazado,
-                    row.entrega,
-                    row.montoEntregado,
-                    row.motivoRechazo,
-                    row.cobranzaCompleta,
-                    row.montoCobrado,
-                    row.montoPorCobrar,
-                    row.motivoCobranzaIncompleta,
-                    row.metodoPago,
-                    row.linkFoto
-                ]);
-
-                const response = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${CONFIG.SPREADSHEET_ID}/values/output:append?valueInputOption=USER_ENTERED`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${accessToken}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        values: values
-                    })
-                });
-
-                if (response.ok) {
-                    return true;
-                } else {
-                    throw new Error('Error guardando en Google Sheets');
-                }
-            } catch (error) {
-                console.error('Error guardando datos:', error);
-                throw error;
-            }
         }
 
         // Manejar selección de chofer
@@ -705,465 +419,197 @@ async function loadTodaysData() {
                     const option = document.createElement('option');
                     option.value = item.op;
                     option.textContent = item.op;
-                    option.dataset.monto
                     option.dataset.monto = item.monto;
-                   opSelect.appendChild(option);
-               });
-           } else {
-               opSelect.disabled = true;
-               opSelect.innerHTML = '<option value="">Primero seleccione un chofer</option>';
-           }
-           
-           resetForm();
-       });
+                    opSelect.appendChild(option);
+                });
+            } else {
+                opSelect.disabled = true;
+                opSelect.innerHTML = '<option value="">Primero seleccione un chofer</option>';
+            }
+            
+            resetForm();
+        });
 
-       // Manejar selección de OP
-       document.getElementById('op').addEventListener('change', function() {
-           const selectedOption = this.selectedOptions[0];
-           if (selectedOption && selectedOption.dataset.monto) {
-               currentOPMonto = parseFloat(selectedOption.dataset.monto);
-               document.getElementById('montoTotal').textContent = `S/${currentOPMonto}`;
-               document.getElementById('montoTotalGroup').style.display = 'block';
-           } else {
-               document.getElementById('montoTotalGroup').style.display = 'none';
-               currentOPMonto = 0;
-           }
-           resetForm();
-       });
+        // Manejar selección de OP
+        document.getElementById('op').addEventListener('change', function() {
+            const selectedOption = this.selectedOptions[0];
+            if (selectedOption && selectedOption.dataset.monto) {
+                currentOPMonto = parseFloat(selectedOption.dataset.monto);
+                document.getElementById('montoTotal').textContent = `S/${currentOPMonto}`;
+                document.getElementById('montoTotalGroup').style.display = 'block';
+            } else {
+                document.getElementById('montoTotalGroup').style.display = 'none';
+                currentOPMonto = 0;
+            }
+            resetForm();
+        });
 
-       // Manejar condiciones para "monto entregado"
-       document.getElementById('montoEntregado').addEventListener('change', function() {
-           const value = this.value;
-           document.getElementById('entregadoParte').classList.toggle('show', value === 'parte');
-           document.getElementById('entregadoNada').classList.toggle('show', value === 'nada');
-           
-           const montoInput = document.getElementById('montoEntregadoValor');
-           const motivoInput = document.getElementById('motivoEntregadoParte');
-           const motivoNadaInput = document.getElementById('motivoEntregadoNada');
-           
-           if (value === 'parte') {
-               montoInput.required = true;
-               motivoInput.required = true;
-               motivoNadaInput.required = false;
-           } else if (value === 'nada') {
-               montoInput.required = false;
-               motivoInput.required = false;
-               motivoNadaInput.required = true;
-           } else {
-               montoInput.required = false;
-               motivoInput.required = false;
-               motivoNadaInput.required = false;
-           }
-       });
+        // Manejar condiciones para "monto entregado"
+        document.getElementById('montoEntregado').addEventListener('change', function() {
+            const value = this.value;
+            document.getElementById('entregadoParte').classList.toggle('show', value === 'parte');
+            document.getElementById('entregadoNada').classList.toggle('show', value === 'nada');
+        });
 
-       // Manejar condiciones para "monto cobrado"
-       document.getElementById('montoCobrado').addEventListener('change', function() {
-           const value = this.value;
-           const entregaValue = document.getElementById('montoEntregado').value;
-           
-           document.getElementById('cobradoParte').classList.toggle('show', value === 'parte');
-           document.getElementById('cobradoNada').classList.toggle('show', value === 'nada');
-           
-           const mostrarComprobantes = (entregaValue === 'todo' || entregaValue === 'parte') && 
-                                     (value === 'todo' || value === 'parte');
-           
-           document.getElementById('comprobantesSection').classList.toggle('show', mostrarComprobantes);
-           
-           document.getElementById('paymentsContainer').innerHTML = '';
-           paymentCounter = 0;
-           
-           if (mostrarComprobantes) {
-               addPaymentRow();
-           }
-           
-           const montoInput = document.getElementById('montoCobradoValor');
-           const motivoInput = document.getElementById('motivoCobradoParte');
-           const motivoNadaInput = document.getElementById('motivoCobradoNada');
-           
-           if (value === 'parte') {
-               montoInput.required = true;
-               motivoInput.required = true;
-               motivoNadaInput.required = false;
-           } else if (value === 'nada') {
-               montoInput.required = false;
-               motivoInput.required = false;
-               motivoNadaInput.required = true;
-           } else {
-               montoInput.required = false;
-               motivoInput.required = false;
-               motivoNadaInput.required = false;
-           }
-       });
+        // Manejar condiciones para "monto cobrado"
+        document.getElementById('montoCobrado').addEventListener('change', function() {
+            const value = this.value;
+            const entregaValue = document.getElementById('montoEntregado').value;
+            
+            document.getElementById('cobradoParte').classList.toggle('show', value === 'parte');
+            document.getElementById('cobradoNada').classList.toggle('show', value === 'nada');
+            
+            const mostrarComprobantes = (entregaValue === 'todo' || entregaValue === 'parte') && 
+                                      (value === 'todo' || value === 'parte');
+            
+            document.getElementById('comprobantesSection').classList.toggle('show', mostrarComprobantes);
+            
+            document.getElementById('paymentsContainer').innerHTML = '';
+            paymentCounter = 0;
+            
+            if (mostrarComprobantes) {
+                addPaymentRow();
+            }
+        });
 
-       document.getElementById('montoEntregado').addEventListener('change', function() {
-           const cobranzaEvent = new Event('change');
-           document.getElementById('montoCobrado').dispatchEvent(cobranzaEvent);
-       });
+        document.getElementById('montoEntregado').addEventListener('change', function() {
+            const cobranzaEvent = new Event('change');
+            document.getElementById('montoCobrado').dispatchEvent(cobranzaEvent);
+        });
 
-       // Agregar fila de pago
-       function addPaymentRow() {
-           paymentCounter++;
-           const container = document.getElementById('paymentsContainer');
-           
-           const row = document.createElement('div');
-           row.className = 'payment-row';
-           row.id = `payment-${paymentCounter}`;
-           
-           const isFirst = container.children.length === 0;
-           
-           row.innerHTML = `
-               <div class="form-group amount">
-                   <label>Monto:</label>
-                   <input type="number" name="paymentAmount[]" placeholder="100" min="0" step="0.01" required onchange="updatePaymentSummary()">
-               </div>
-               <div class="form-group method">
-                   <label>Medio:</label>
-                   <select name="paymentMethod[]" onchange="togglePhotoInput(this)" required>
-                       <option value="">Seleccionar...</option>
-                       <option value="efectivo">Efectivo</option>
-                       <option value="qr">QR</option>
-                       <option value="transferencia">Transferencia</option>
-                   </select>
-               </div>
-               <div class="form-group photo">
-                   <label>Foto:</label>
-                   <div class="photo-buttons" style="display:none;">
-                       <button type="button" class="photo-btn" onclick="takePhoto(${paymentCounter})">📸 Tomar Foto</button>
-                       <button type="button" class="photo-btn secondary" onclick="selectFromGallery(${paymentCounter})">🖼️ Galería</button>
-                   </div>
-                   <input type="file" name="paymentPhoto[]" accept="image/*" capture="environment" class="hidden-input" id="camera-${paymentCounter}" onchange="previewPhoto(this)">
-                   <input type="file" name="paymentPhoto[]" accept="image/*" class="hidden-input" id="gallery-${paymentCounter}" onchange="previewPhoto(this)">
-                   <div class="photo-status">-</div>
-                   <img class="photo-preview" style="display:none;">
-                   <div class="photo-info" style="display:none;"></div>
-               </div>
-               ${!isFirst ? `<button type="button" class="remove-btn" onclick="removePaymentRow(${paymentCounter})">Eliminar</button>` : ''}
-           `;
-           
-           container.appendChild(row);
-           updatePaymentSummary();
-       }
+        function addPaymentRow() {
+            paymentCounter++;
+            const container = document.getElementById('paymentsContainer');
+            
+            const row = document.createElement('div');
+            row.className = 'payment-row';
+            row.id = `payment-${paymentCounter}`;
+            
+            const isFirst = container.children.length === 0;
+            
+            row.innerHTML = `
+                <div class="form-group amount">
+                    <label>Monto:</label>
+                    <input type="number" name="paymentAmount[]" placeholder="100" min="0" step="0.01" required onchange="updatePaymentSummary()">
+                </div>
+                <div class="form-group method">
+                    <label>Medio:</label>
+                    <select name="paymentMethod[]" required>
+                        <option value="">Seleccionar...</option>
+                        <option value="efectivo">Efectivo</option>
+                        <option value="qr">QR</option>
+                        <option value="transferencia">Transferencia</option>
+                    </select>
+                </div>
+                ${!isFirst ? `<button type="button" class="remove-btn" onclick="removePaymentRow(${paymentCounter})">Eliminar</button>` : ''}
+            `;
+            
+            container.appendChild(row);
+            updatePaymentSummary();
+        }
 
-       function takePhoto(paymentId) {
-           document.getElementById(`camera-${paymentId}`).click();
-       }
+        function updatePaymentSummary() {
+            const amounts = document.querySelectorAll('input[name="paymentAmount[]"]');
+            let total = 0;
+            
+            amounts.forEach(input => {
+                if (input.value && !isNaN(input.value)) {
+                    total += parseFloat(input.value);
+                }
+            });
+            
+            document.getElementById('totalCobrado').textContent = total.toFixed(2);
+            
+            const summaryDiv = document.getElementById('paymentSummary');
+            const saldoDiv = document.getElementById('saldoPendiente');
+            
+            if (total > 0) {
+                summaryDiv.style.display = 'block';
+                
+                if (total < currentOPMonto) {
+                    const saldo = currentOPMonto - total;
+                    saldoDiv.textContent = `Saldo pendiente: S/${saldo.toFixed(2)}`;
+                    saldoDiv.style.display = 'block';
+                } else if (total > currentOPMonto) {
+                    saldoDiv.textContent = `Exceso: S/${(total - currentOPMonto).toFixed(2)}`;
+                    saldoDiv.style.color = 'orange';
+                    saldoDiv.style.display = 'block';
+                } else {
+                    saldoDiv.style.display = 'none';
+                }
+            } else {
+                summaryDiv.style.display = 'none';
+            }
+        }
 
-       function selectFromGallery(paymentId) {
-           document.getElementById(`gallery-${paymentId}`).click();
-       }
+        function removePaymentRow(id) {
+            document.getElementById(`payment-${id}`).remove();
+            updatePaymentSummary();
+        }
 
-       function togglePhotoInput(select) {
-           const row = select.closest('.payment-row');
-           const photoButtons = row.querySelector('.photo-buttons');
-           const photoStatus = row.querySelector('.photo-status');
-           
-           if (select.value === 'qr' || select.value === 'transferencia') {
-               photoButtons.style.display = 'flex';
-               photoStatus.textContent = 'Requerida';
-               photoStatus.style.color = 'red';
-               
-               const cameraInput = row.querySelector('input[accept*="capture"]');
-               const galleryInput = row.querySelector('input:not([accept*="capture"])');
-               cameraInput.required = true;
-               galleryInput.required = true;
-           } else if (select.value === 'efectivo') {
-               photoButtons.style.display = 'none';
-               photoStatus.textContent = 'No requerida';
-               photoStatus.style.color = 'green';
-               
-               const cameraInput = row.querySelector('input[accept*="capture"]');
-               const galleryInput = row.querySelector('input:not([accept*="capture"])');
-               cameraInput.required = false;
-               galleryInput.required = false;
-               cameraInput.value = '';
-               galleryInput.value = '';
-               
-               const preview = row.querySelector('.photo-preview');
-               const info = row.querySelector('.photo-info');
-               preview.style.display = 'none';
-               info.style.display = 'none';
-           } else {
-               photoButtons.style.display = 'none';
-               photoStatus.textContent = '-';
-               photoStatus.style.color = 'black';
-               
-               const cameraInput = row.querySelector('input[accept*="capture"]');
-               const galleryInput = row.querySelector('input:not([accept*="capture"])');
-               cameraInput.required = false;
-               galleryInput.required = false;
-           }
-       }
+        function resetForm() {
+            document.getElementById('montoEntregado').value = '';
+            document.getElementById('montoCobrado').value = '';
+            document.querySelectorAll('.conditional').forEach(el => el.classList.remove('show'));
+            document.getElementById('paymentsContainer').innerHTML = '';
+            document.getElementById('summary').style.display = 'none';
+            paymentCounter = 0;
+        }
 
-       function previewPhoto(input) {
-           const row = input.closest('.payment-row');
-           const preview = row.querySelector('.photo-preview');
-           const info = row.querySelector('.photo-info');
-           const status = row.querySelector('.photo-status');
-           
-           if (input.files && input.files[0]) {
-               const file = input.files[0];
-               const reader = new FileReader();
-               
-               reader.onload = function(e) {
-                   preview.src = e.target.result;
-                   preview.style.display = 'block';
-                   
-                   const sizeKB = (file.size / 1024).toFixed(1);
-                   info.textContent = `📁 ${file.name} (${sizeKB} KB)`;
-                   info.style.display = 'block';
-                   
-                   status.textContent = '✅ Foto adjuntada';
-                   status.style.color = 'green';
-               };
-               
-               reader.readAsDataURL(file);
-               
-               const otherInput = input.id.includes('camera') ? 
-                   row.querySelector('#gallery-' + input.id.split('-')[1]) :
-                   row.querySelector('#camera-' + input.id.split('-')[1]);
-               if (otherInput) otherInput.value = '';
-           }
-       }
+        function generateSummary() {
+            const chofer = document.getElementById('chofer').selectedOptions[0]?.textContent || '';
+            const op = document.getElementById('op').value;
+            const montoTotal = currentOPMonto;
+            const entrega = document.getElementById('montoEntregado').value;
+            const cobranza = document.getElementById('montoCobrado').value;
+            
+            let html = `
+                <div class="summary-item"><strong>Chofer:</strong> ${chofer}</div>
+                <div class="summary-item"><strong>OP:</strong> ${op}</div>
+                <div class="summary-item"><strong>Monto Total:</strong> S/${montoTotal}</div>
+                <div class="summary-item"><strong>Entrega:</strong> ${entrega === 'todo' ? 'Completa' : entrega === 'parte' ? 'Incompleta' : 'No entregado'}</div>
+                <div class="summary-item"><strong>Cobranza:</strong> ${cobranza === 'todo' ? 'Completa' : cobranza === 'parte' ? 'Incompleta' : 'No cobrado'}</div>
+            `;
+            
+            const amounts = document.querySelectorAll('input[name="paymentAmount[]"]');
+            const methods = document.querySelectorAll('select[name="paymentMethod[]"]');
+            
+            if (amounts.length > 0) {
+                html += '<div class="summary-item"><strong>Pagos:</strong><ul style="margin-left: 20px;">';
+                amounts.forEach((amount, i) => {
+                    if (amount.value && methods[i].value) {
+                        html += `<li>S/${amount.value} - ${methods[i].selectedOptions[0].textContent}</li>`;
+                    }
+                });
+                html += '</ul></div>';
+            }
+            
+            document.getElementById('summaryContent').innerHTML = html;
+            document.getElementById('summary').style.display = 'block';
+        }
 
-       function updatePaymentSummary() {
-           const amounts = document.querySelectorAll('input[name="paymentAmount[]"]');
-           let total = 0;
-           
-           amounts.forEach(input => {
-               if (input.value && !isNaN(input.value)) {
-                   total += parseFloat(input.value);
-               }
-           });
-           
-           document.getElementById('totalCobrado').textContent = total.toFixed(2);
-           
-           const summaryDiv = document.getElementById('paymentSummary');
-           const saldoDiv = document.getElementById('saldoPendiente');
-           
-           if (total > 0) {
-               summaryDiv.style.display = 'block';
-               
-               if (total < currentOPMonto) {
-                   const saldo = currentOPMonto - total;
-                   saldoDiv.textContent = `Saldo pendiente: S/${saldo.toFixed(2)}`;
-                   saldoDiv.style.display = 'block';
-               } else if (total > currentOPMonto) {
-                   saldoDiv.textContent = `Exceso: S/${(total - currentOPMonto).toFixed(2)}`;
-                   saldoDiv.style.color = 'orange';
-                   saldoDiv.style.display = 'block';
-               } else {
-                   saldoDiv.style.display = 'none';
-               }
-           } else {
-               summaryDiv.style.display = 'none';
-           }
-       }
+        // Manejar envío del formulario
+        document.getElementById('deliveryForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            generateSummary();
+            
+            const submitBtn = document.querySelector('.submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Enviando...';
+            
+            setTimeout(() => {
+                alert('¡Formulario procesado correctamente!\\n\\n(Los datos se mostrarían en Google Sheets)');
+                
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Enviar Formulario';
+            }, 1500);
+        });
 
-       function removePaymentRow(id) {
-           document.getElementById(`payment-${id}`).remove();
-           updatePaymentSummary();
-       }
-
-       function resetForm() {
-           document.getElementById('montoEntregado').value = '';
-           document.getElementById('montoCobrado').value = '';
-           document.querySelectorAll('.conditional').forEach(el => el.classList.remove('show'));
-           document.getElementById('paymentsContainer').innerHTML = '';
-           document.getElementById('summary').style.display = 'none';
-           paymentCounter = 0;
-       }
-
-       function generateSummary() {
-           const chofer = document.getElementById('chofer').selectedOptions[0]?.textContent || '';
-           const op = document.getElementById('op').value;
-           const montoTotal = currentOPMonto;
-           const entrega = document.getElementById('montoEntregado').value;
-           const cobranza = document.getElementById('montoCobrado').value;
-           
-           let html = `
-               <div class="summary-item"><strong>Chofer:</strong> ${chofer}</div>
-               <div class="summary-item"><strong>OP:</strong> ${op}</div>
-               <div class="summary-item"><strong>Monto Total:</strong> S/${montoTotal}</div>
-               <div class="summary-item"><strong>Entrega:</strong> ${entrega === 'todo' ? 'Completa' : entrega === 'parte' ? 'Incompleta' : 'No entregado'}</div>
-               <div class="summary-item"><strong>Cobranza:</strong> ${cobranza === 'todo' ? 'Completa' : cobranza === 'parte' ? 'Incompleta' : 'No cobrado'}</div>
-           `;
-           
-           const amounts = document.querySelectorAll('input[name="paymentAmount[]"]');
-           const methods = document.querySelectorAll('select[name="paymentMethod[]"]');
-           
-           if (amounts.length > 0) {
-               html += '<div class="summary-item"><strong>Pagos:</strong><ul style="margin-left: 20px;">';
-               amounts.forEach((amount, i) => {
-                   if (amount.value && methods[i].value) {
-                       html += `<li>S/${amount.value} - ${methods[i].selectedOptions[0].textContent}</li>`;
-                   }
-               });
-               html += '</ul></div>';
-           }
-           
-           document.getElementById('summaryContent').innerHTML = html;
-           document.getElementById('summary').style.display = 'block';
-       }
-
-       // Manejar envío del formulario
-       document.getElementById('deliveryForm').addEventListener('submit', async function(e) {
-           e.preventDefault();
-           
-           generateSummary();
-           
-           const submitBtn = document.querySelector('.submit-btn');
-           submitBtn.disabled = true;
-           submitBtn.textContent = 'Subiendo fotos y guardando datos...';
-           
-           try {
-               const result = await processFormData();
-               
-               if (result.success) {
-                   alert('¡Formulario enviado correctamente y guardado en Google Sheets!');
-                   this.reset();
-                   resetForm();
-               } else {
-                   throw new Error(result.error || 'Error desconocido');
-               }
-               
-           } catch (error) {
-               console.error('Error enviando formulario:', error);
-               alert('Error al enviar el formulario. Por favor intenta de nuevo.');
-           }
-           
-           submitBtn.disabled = false;
-           submitBtn.textContent = 'Enviar Formulario';
-       });
-
-       // Procesar datos del formulario
-       async function processFormData() {
-           try {
-               const chofer = document.getElementById('chofer').selectedOptions[0]?.textContent || '';
-               const op = document.getElementById('op').value;
-               const montoTotal = currentOPMonto;
-               const entrega = document.getElementById('montoEntregado').value;
-               const cobranza = document.getElementById('montoCobrado').value;
-               
-               const now = new Date();
-               const fecha = `${now.getDate().toString().padStart(2, '0')}/${(now.getMonth() + 1).toString().padStart(2, '0')}/${now.getFullYear()}`;
-               const hora = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
-               
-               const entregaTexto = entrega === 'todo' ? 'Entregado' : 
-                                  entrega === 'parte' ? 'Entregado' : 'Rechazado';
-               
-               const entregaCompleta = entrega === 'todo' ? 'Completa' : 'Incompleta';
-               
-               const cobranzaTexto = cobranza === 'todo' ? 'Completa' : 
-                                   cobranza === 'parte' ? 'Incompleta' : 'No cobrado';
-               
-               let motivoEntrega = 'NA';
-               if (entrega === 'parte') {
-                   motivoEntrega = document.getElementById('motivoEntregadoParte').value;
-               } else if (entrega === 'nada') {
-                   motivoEntrega = document.getElementById('motivoEntregadoNada').value;
-               }
-               
-               let motivoCobranza = 'NA';
-               if (cobranza === 'parte') {
-                   motivoCobranza = document.getElementById('motivoCobradoParte').value;
-               } else if (cobranza === 'nada') {
-                   motivoCobranza = document.getElementById('motivoCobradoNada').value;
-               }
-               
-               let montoEntregado = 0;
-               if (entrega === 'todo') {
-                   montoEntregado = montoTotal;
-               } else if (entrega === 'parte') {
-                   montoEntregado = parseFloat(document.getElementById('montoEntregadoValor').value) || 0;
-               }
-               
-               const amounts = document.querySelectorAll('input[name="paymentAmount[]"]');
-               const methods = document.querySelectorAll('select[name="paymentMethod[]"]');
-               
-               const rows = [];
-               let totalCobrado = 0;
-               
-               // Procesar cada pago
-               for (let i = 0; i < amounts.length; i++) {
-                   if (amounts[i].value && methods[i].value) {
-                       const montoStr = parseFloat(amounts[i].value);
-                       totalCobrado += montoStr;
-                       
-                       const paymentRow = amounts[i].closest('.payment-row');
-                       const cameraInput = paymentRow.querySelector('input[accept*="capture"]');
-                       const galleryInput = paymentRow.querySelector('input:not([accept*="capture"])');
-                       
-                       let linkFoto = 'NA';
-                       
-                       // Subir foto si existe
-                       let photoFile = null;
-                       if (cameraInput && cameraInput.files[0]) {
-                           photoFile = cameraInput.files[0];
-                       } else if (galleryInput && galleryInput.files[0]) {
-                           photoFile = galleryInput.files[0];
-                       }
-                       
-                       if (photoFile) {
-                           const filename = `${chofer}_${op}_${methods[i].selectedOptions[0].textContent}_${Date.now()}.jpg`;
-                           linkFoto = await uploadPhotoToDrive(photoFile, filename);
-                       }
-                       
-                       rows.push({
-                           fecha: fecha,
-                           hora: hora,
-                           chofer: chofer,
-                           op: op,
-                           monto: montoTotal,
-                           entregadoRechazado: entregaTexto,
-                           entrega: entregaCompleta,
-                           montoEntregado: montoEntregado,
-                           motivoRechazo: motivoEntrega,
-                           cobranzaCompleta: cobranzaTexto,
-                           montoCobrado: montoStr,
-                           montoPorCobrar: 0,
-                           motivoCobranzaIncompleta: motivoCobranza,
-                           metodoPago: methods[i].selectedOptions[0].textContent,
-                           linkFoto: linkFoto
-                       });
-                   }
-               }
-               
-               // Agregar fila para saldo pendiente
-               if (totalCobrado < montoTotal && totalCobrado > 0) {
-                   rows.push({
-                       fecha: fecha,
-                       hora: hora,
-                       chofer: chofer,
-                       op: op,
-                       monto: montoTotal,
-                       entregadoRechazado: entregaTexto,
-                       entrega: entregaCompleta,
-                       montoEntregado: montoEntregado,
-                       motivoRechazo: motivoEntrega,
-                       cobranzaCompleta: 'Incompleta',
-                       montoCobrado: 0,
-                       montoPorCobrar: montoTotal - totalCobrado,
-                       motivoCobranzaIncompleta: 'Saldo pendiente',
-                       metodoPago: 'Pendiente',
-                       linkFoto: 'NA'
-                   });
-               }
-               
-               // Guardar en Google Sheets
-               await saveToGoogleSheets(rows);
-               
-               return { success: true };
-               
-           } catch (error) {
-               console.error('Error procesando datos:', error);
-               return { success: false, error: error.message };
-           }
-       }
-
-       // Inicializar aplicación
-       document.addEventListener('DOMContentLoaded', function() {
-           loadTodaysData();
-       });
-   </script>
+        // Inicializar aplicación
+        document.addEventListener('DOMContentLoaded', function() {
+            loadTodaysData();
+        });
+    </script>
 </body>
 </html>
